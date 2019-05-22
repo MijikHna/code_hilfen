@@ -69,6 +69,7 @@
 
 >User in eine Gruppe aufnehmen
 * `sudo usermod -aG mysql $USER`
+* `sudo adduser userName gruppeName`
 
 ### Tar
 - `tar -zxf /ordner/wo/datei.tar.gz -C /ordner/wohin/`
