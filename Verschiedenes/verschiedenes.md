@@ -1,0 +1,1 @@
+* Django-Admin Location - `/usr/local/bin/django-admin`
