@@ -123,6 +123,14 @@ eins | zwei |drei | vier
 default|rechts|links|mitte
 eins ||| 1
 
+```
+Eins | Zwei | Drei | Vier
+  ---| ---:|:---|:---:
+  eins | zwei |drei | vier
+  default|rechts|links|mitte
+  eins ||| 1
+```
+
 * `---|---` = trennt Kopf vom Inhalt. **!** alle Zeilen müssen gleiche Anzahl von `|` haben
 * Es gibt im Web auch Tools, die MD-Tabellen generieren können
 
