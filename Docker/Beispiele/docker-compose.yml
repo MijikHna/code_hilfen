@@ -1,0 +1,18 @@
+version: "3"
+services: 
+  web: # Service web nennen
+    image: beispiel_1_python
+    deploy:
+      replicas: 5 # 5 Instanzen laufen lassen
+      resources:
+        limits:
+          cpus: "0.1" # Container darf 10% der CPU benutzen
+          memory: 50M
+        restart_policy: #direkt restarten, wenn abstürzt
+          condition: on-failure 
+      ports: 
+        - "4000:80"
+      networks: 
+        -webnet #web's container teilen Port 80, der zu 4000 gemappt wird über Netzwerk mit Namen webnet
+    networks: 
+      webnet: #Netzwerk webnet mit Standardeisntellungen
