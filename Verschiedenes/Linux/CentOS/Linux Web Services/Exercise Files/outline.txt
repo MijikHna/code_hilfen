@@ -1,0 +1,11 @@
+Widgets and You!
+How to use the latest widget technologies
+~ ~ ~ ~ ~ ~ ~ ~
+1. Welcome
+2. What's a widget?
+3. Configuring your widget
+	Morning session: Home configuration
+	Afternoon session: Workplace configuration
+4. Securing your widget
+5. Connecting your widget to the internet
+6. Developing for widgets
