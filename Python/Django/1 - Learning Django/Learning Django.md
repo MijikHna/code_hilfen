@@ -1,5 +1,5 @@
-### Setting up Django Project
-####1 - what is django
+### 1 -Setting up Django Project
+#### 1 - what is django
 * www.djangoproject.com
 * Python-Framework
 * Framework - Sammlung von Tools, um Webseiten zu bauen
@@ -9,32 +9,31 @@
 #### 2 - install python and django
 * von python.org -> herunterladen und installieren
 ODER
-* mit pip3: pip3 install django==1.11.7
+* mit pip3: `pip3 install django==1.11.7`
 
 #### 3 - create a Django project
 * `django-admin startproject ProjectName` - Wird Ordner für Django-Projekt angelegt mit folgenden Dateien darin: (djang-admin.py startproject WisdomPets)
-* `manane.py` - führt Befehle des Projekt aus
-* *ProjectName/__init__.py* - Ordner enthält Python-Dateien
-* *ProjectName/wsgi.py* - Provides a hook for Web Server
-* *ProjectName/settings.py* - konfiguriert Django
-* *ProjectName/urls.py* - routet Requests abhängig von URL
+    * `manane.py` - führt Befehle des Projekt aus
+    * *ProjectName/__init__.py* - Ordner enthält Python-Dateien
+    * *ProjectName/wsgi.py* - Provides a hook for Web Server
+    * *ProjectName/settings.py* - konfiguriert Django
+    * *ProjectName/urls.py* - routet Requests abhängig von URL
 * `python3 manage.py runserver` - Server Starten und da Django ausführen
 
-###4 - create a Django app
+#### 4 - create a Django app
 * Django-App - Ordner mit Python Dateien
-
 * `python3 manage.py startapp appName` - es wird ordner mit appName erstellt (pyhon3 manage.py startapp Adoptions)
 * in *ProjectName/settings.py* zu INSTALLED_APPS gehen und appName, am Ende der Liste eintragen
 * AppName-Ordner hat:
-    + app.py = Konfiguration und Initialisierung
-    + models.py = Data layer -> DB-Schema und DB-Anfragen machen
-    + admin.py = Administratives Interface =
-    + urls.py = URL routing
-    + views.py = Control layer = Logik um mit den Requests umzugehen und HTML-Responses erstellen
-    + tests.py = App testen
-    + migrations/ = enhält Migrations-Dateie <- DB-Dateien, wenn man DB-Schema ändert
+    + *app.py* - Konfiguration und Initialisierung
+    + *models.py* - Data layer -> DB-Schema und DB-Anfragen machen
+    + *admin.py* - Administratives Interface
+    + *urls.py* - URL routing
+    + *views.py* - Control layer bzw. Logik um mit den Requests umzugehen und HTML-Responses erstellen
+    + *tests.py* - App testen
+    + *migrations/* - enhält Migrations-Dateie <- DB-Dateien, wenn man DB-Schema ändert
 
-### Working with Django models and admin
+### 2 - Working with Django models and admin
 #### 1 - models, routing, view and templates
 * Architekture des Framework verstehenself.
     + Django benutut Model View Controler aus 4 Teielen:
@@ -47,10 +46,10 @@ ODER
 
 #### 2 - Django models
 * Data Layer der App
-* definiet DB-Struktur
-* erlaubt DB-Anfragen
+    * definiet DB-Struktur
+    * erlaubt DB-Anfragen
 * models ist Klasse die von django.db.models.model erbt
-* ~Excel-Tabelle
+    * ~Excel-Tabelle
 * Model-Klasse ersteleln:
     1. django.db.model imortieren:
     2. eigene Klasse erstellen, die von models.model erbt + eigene Attribute erstellen:
@@ -127,7 +126,7 @@ class Item(models.Model):
         * !! get() kann nur ein Object zurückgeben (also kein Array). Also falls:
     * `Pet.objects.get(age=1)` - werden mehrere Pets returnt => MultipleObjectException
     * `get()` ist eigentlich für id-es gut
-    * <- man kann im *views.py* diese Exceptions checken
+        *  man kann im *views.py* diese Exceptions checken
     * `pet.vaccinations.all()`
 
 ### 3 - Building URL handlers and view
@@ -160,7 +159,7 @@ urlpatterns=[
 
 #### 3 - Implements Django views
 * im Beispiel wurden template-Files und Views-Namen gleich genannt <- ist aber nicht erforderlich
-* templates in `AppOrnder/templates` erstellten <- eventuell zuerst Ordner templates erstellen
+* templates in *AppOrnder/templates* erstellten <- eventuell zuerst Ordner templates erstellen
 
 ### 4 - Building Django Templates
 #### 1 - Django Templates
@@ -180,9 +179,8 @@ urlpatterns=[
 <h3> {{pet.name|capfirst}} </h3> #=>pet.name benutzt eingebauten Filter capfirst = erster Bushstabe 
 wird groß
 ```
-
 * manche Template-Tags haben keinen end-Tag => rendern nur String
-    #sollte in `url.py` stehen
+    * sollte in `url.py` stehen
     * `{% url "index" %}` - hier wird `name="index"` benutzt. <- URL-Tag mit Argument home wird Pfad zu home-View generieren => Output: /
     * `{% url "pet_detail" pet.id %}` - Output */adoption/pet.id/*
 

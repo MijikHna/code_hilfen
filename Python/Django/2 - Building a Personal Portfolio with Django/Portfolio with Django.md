@@ -2,7 +2,7 @@
 #### 1 - Creating the models in DjangoTemplates
 * DB um Jobs zu speichern
 * Model = Klasse, die in DB gepeichert wird:
-    * in `/portfolio-project/models.py` erstellen <- kann man mehrer Classen erstellen.
+    * in */portfolio-project/models.py* erstellen <- kann man mehrer Classen erstellen.
 
 #### 2-Postgres setup for Django:
 * per Default steht in *setttings.py* welche DB genutzt wird
@@ -16,7 +16,7 @@
     7. als user postgres -> `dropdb dbname` = DB löschen
 
 #### 3-Connecting your Django project to Postgres:
-* bei `settings.py` noch Postgres einfügen:
+* bei *settings.py* noch Postgres einfügen:
 * in DATABASE
 ```python
 'default': {
@@ -28,13 +28,13 @@
     'PORT': '5432',
 }
 ```
-* damit Django sich mit Postgres verbinden kann bracht er psycopg2-binary =>:
+* damit Django sich mit Postgres verbinden kann braucht er psycopg2-binary =>:
     * `pip3 install psycopg2-binary`
 
 #### 4-Make Django migrations and migrate:
 * Migrationen = Wege um DB für Django-Projekte zu setzen
-    * `python3 manage.py makemigrations`  = Ausführen, wenn man Änderungen im Model macht.
-    * `python3 manage.py migrate` = die Migrationen ausführen
+    * `python3 manage.py makemigrations` - Ausführen, wenn man Änderungen im Model macht.
+    * `python3 manage.py migrate` - die Migrationen ausführen
 
 #### 5-Setting up an admin panel in Django:
 Um sich in localhost\admin anmelden zu können => zuerste admin-user erstellen
@@ -49,16 +49,16 @@ Um sich in localhost\admin anmelden zu können => zuerste admin-user erstellen
 #### 7-Pulling objects from the database in Django:
 * in *view.py* Code schreiben, um Jobs anzuzeigen
 
-### 3 - Django and Databases
+### 4 - Designing your Django Project
 #### 1 - Bootstrap overview and isntallation
 * Bootstrap-Example-Pages benutzen:
     * https://getbootstrap.com/ -> Examples -> z.B Album auswählen -> View Page-source -> alles Auswählen und z.B in eigenenes home.html einfügen
 * Bootstrap selbst einfügen:
     * https://getbootstrap.com/ -> Get Started -> CSS-Link kopieren -> JS kopieren. -> so anpassen wie man es möchte.
 
-####2 - Page layout and template in Django
+#### 2 - Page layout and template in Django
 
-####3 - Adding static images to your Django Projects
+#### 3 - Adding static images to your Django Projects
 * in */jobs* Order static erstellen (eventuel darin noch images)
 * Django sagen, wo statische Sachen liegen => in *setttings.py* einstellen:
 * `STATIC_URL`
@@ -68,7 +68,7 @@ Um sich in localhost\admin anmelden zu können => zuerste admin-user erstellen
 * `from django.conf.urls.static import static`
 * \+ am Ende von `urlpatterns =[] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)`
 
-####4 - Collectstatic in Django
+#### 4 - Collectstatic in Django
 1. `python3 manage.py collectstatic` - alle Statischen Dateien in */portfolio-project/static* bringen bzw. zum Order, denn man mit *STATIC_ROOT* eingestellt
 2. auf der HTML-Seite ganz oben eingeben:
     * `#{% load static %}`
@@ -104,7 +104,7 @@ def __str__(self):
 * mit *jobs_id* den richtigen Job aus DB holen.
 * `from django.shortcuts import get_object_or_404` - Funktion importieren; diese Funktion holt bestimmtes Object aus DB, wenn nicht geklappt => wird 404 angezeigt.
 * <- diese Funktion dann in *urls.py detail():* aufrufen.
-* `job_detail = get_object_or_404(Job, pk=job_id)` -  `pk`=PrimaryKey; `Job` = Objekt-Typ
+* `job_detail = get_object_or_404(Job, pk=job_id)` - `pk`=PrimaryKey; `Job` = Objekt-Typ
 * in */migration/XXX_initial.py* kann man schauen, aus welchen Feldern die DB besteht. (migratoins.CreateMode)
 * man braucht ein Template detail.html
 
@@ -112,7 +112,7 @@ def __str__(self):
 * von *home.html* etwas in *detail.html* kopieren und anpassen
 * `<a href="{% url 'home'}"` - *home* ist name=".." von path in *urls.py*
 
-####4 - URL paths with parameters:
+#### 4 - URL paths with parameters:
 * `{{  }}` benutzen, wenn man Variablen aus Code in Template einfügen möchte => oft die Parameter in den Funktionen von urls.py
 * `<a href="{% url 'detail' job.id %}">` - in *.html* eingeben. => wenn `detail(requset job.id)` wird *job_id* übergeben
 
