@@ -1,0 +1,4 @@
+Das ist mein Test.
+Ich versuche SHA1.
+Schauen wir mal, was rauskommt.
+openssl sha1 -out oversha1.txt over.txt

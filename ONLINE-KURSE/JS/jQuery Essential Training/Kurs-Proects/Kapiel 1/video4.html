@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel= "stylesheet" href="../css/style.css" />
+
+    <script src="../../jquery-3.4.1.js"></script>
+
+    <script>
+        //jQuery
+        $("document").ready(function(){
+           $("#example").on("mousemove", onMouseOver); //sind Call-Back-Funktionen
+           $("#example").on("click", onMouseClick);
+           $("#example").on("mouseleave", onMouseLeave);
+        });
+
+        function onMouseOver(evt) { //evt = jQuery Unified Event Object = Set von Events für alle Browser
+            $("#example").text(evt.type + ": " + evt.pageX + ", "
+                + evt.pageY + "\n" + "Button: " + evt.which + " Key: " 
+                + evt.metaKey);
+        }
+
+        function onMouseClick(evt) {
+            $("#example").text(evt.type + ": " + evt.pageX + ", "
+                + evt.pageY);
+            $("#example").off("mousemove", onMouseOver); //hier wird der EventListener für "mouseomove" ausgemacht 
+        }
+        
+        function onMouseLeave(evt) {
+            $("#example").text("mouseleave");
+        }
+
+    </script>
+
+</head>
+<body>
+    <div>Test</div>
+    <div id="example"></div>
+</body>
+</html>

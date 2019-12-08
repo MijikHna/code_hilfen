@@ -1,0 +1,15 @@
+version: "3.7"
+services: 
+  angular-server:
+    build: 
+      context: ./Dockerfiles/
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ONLINE-KURSE/Become a MEAN JavaScript Developer/01 - Angular Essential Training/src/Docker/Dockerfiles/Dockerfile"
+    image: angular_lernen/angular-server
+    hostname: angular-server
+    container_name: angular-server
+    restart: on-failure
+    ports:
+      - "8000:8000"
+      - "4200:4200"
+    volumes:
+      - ../bsp-code:/app/code/angular-code

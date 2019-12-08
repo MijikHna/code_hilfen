@@ -163,17 +163,65 @@ find-links =
     * Zsh: `pip completion --zsh >> ~/.zprofil`
     * Fish: `pip completion --fish > ~/.config/fish/completions/pip.fish`
 
-#### aus lokalen Packeten installieren
+#### aus lokalen Paketen installieren
+* = wenn PIP-Paket schon heruntergeladen:
+* `pip download --destination-directory /prad/zu/ordner -r requirements.txt` - das PIP-Paket herunterladen
+* `pip wheel --wheel-dir /pfad/zu/order -r requirements.txt` - wheels fpr diese Pakets erstellen.
+* `pip install --no-index --find-links=/pfad/zu/ordner/ -r requirements.txt` - die heruntergeladenen PIP-Pakete herunterladen
 
+#### Only if needed Recursive Upgrade
+* es gibt zwei `--upgrade-stratege`:
+    * `eager` - alle dependencies upgraden, egal was in requirements steht
+    * `only-if-needed` - upgarded Dependency nur, wenn es Parent Requirements nicht erfüllt -> ist Default
+* `pip install --upgrae --no-deps PacketName`
 
-
-
-
-
-
-
-
-
+#### User Installs
+* die Option `--user` - Pakete in User-Ordner installieren
+* User-Schema kann eingestellt werden über die ENV-Variable `PYTHONUSERBASE` -> `site.USER_BASE` wird dann upgedatet
+* `export PYTHONUSERBASE=/myOrdner`
+* `pip install --user PipPacket`
+    * wenn das Paket schon global gibt => wird nicht installiert
+    * wenn man in VirtEnv unterwegs ist, wird auch nicht installiert.
+    * mit `ignore-installed` - kann man die Installation erzwingen
+### Ensuring Repeatability
+#### gepinnte Versionen
+* = requirements.txt + `pip freeeze` benutzen
+* Installationen mit `--no-deps` machen
+#### Hash-checking Mode
+* Hilfe bei Versionen + Sicherheit
+* in requirements.txt z.B.:
+    * `FooProject == 1.2 --hash=sha256:2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b982` 
+* git für automatischen Server Deployment
+#### Bundle Installationen
+* mit `pip wheel` kann man Project Dependencies bündeln zu einem Archiv.:
+    * Verpacken:
+    ```bash
+    tempdir=$(mktemp -d /tmp/wheelhouse-XXXXX)
+    pip wheel -r requirements.txt --wheel-dir=$tempdir
+    cwd=`pwd`
+    (cd "$tempdir"; tar -cjvf "$cwd/bundled.tar.bz2" *)
+    ```
+    * Entpacken:
+    ```bash
+    tempdir=$(mktemp -d /tmp/wheelhouse-XXXXX)
+    (cd $tempdir; tar -xvf /path/to/bundled.tar.bz2)
+    pip install --force-reinstall --ignore-installed --upgrade --no-index --no-deps $tempdir/*
+    ```
+* aber diese Packete sind dann OS/Architekture-Abhängig
+### PIP in Programm benutzen
+* pip ist ein Programm in Python geschrieben
+* kann man mit `import pip` benutzen. Aber sollte man eigentlich vermeiden: 
+    1. pip ist nich Thread sicher
+    2. User-Code kann überschrieben werden
+    3. bei Doppeltem Ablaufen kann Code überschreiben
++ wenn man Packete installiert, während das Pyhton-Programm läuft, kann auch zu Problemen führen bzw. sich nicht wie erwartet verhalten.
+* man sollte PIP in Subprocess laufen:
+    * `subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'my_package'])` 
+    * `reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])` - pip-Ausgabe abspeichern bzw. den Subprozess ausgibt.
+* dazu gibt es nocht Alternativen:
+    * `packaging`
+    * `setuptools`
+    * `distlib`
 
 ### Reference Guide:
     * https://pip.pypa.io/en/stable/reference/

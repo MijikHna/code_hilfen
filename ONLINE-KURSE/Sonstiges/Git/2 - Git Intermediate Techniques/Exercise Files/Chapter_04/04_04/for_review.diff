@@ -1,0 +1,28 @@
+diff --git a/README.md b/README.md
+index eb84f95..7646b91 100644
+--- a/README.md
++++ b/README.md
+@@ -1,2 +1 @@
+-This is a demonstraton repository for Git Intermediate Techniques.
+-
++This is a demonstration repository for Git Intermediate Techniques.
+diff --git a/shopping.txt b/shopping.txt
+index bb9983d..80de874 100644
+--- a/shopping.txt
++++ b/shopping.txt
+@@ -1,12 +1,12 @@
+ Shopping List
+ 
+-apples
++red apples
+ 6 bananas
+-yogurt
++vanilla yogurt
+ 2% milk
+ wheat bread
+ cereal
+-eggs
++12 eggs
+ bacon
+ orange juice
+ grapes

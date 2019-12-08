@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  web:
+    image: mydocker/django2_portfolio:02
+    volumes:
+      - ./portfolio-project:/opt/myDjangoApp
+    ports:
+      - "8000:8000 5432:5432"
+    hostname: djangoappportfolio
+    container_name: djangoweb
+    networks:
+      djangonetwork:
+        - ipv4_address: 10.10.100.10
+
+networks:
+  djangonw:
+    name: djangonw
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.100.0/24"

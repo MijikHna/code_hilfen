@@ -1,0 +1,6 @@
+Expenses
+
+gasoline      $30
+groceries     $23
+hiking shoes  $50
+sunscreen     $15

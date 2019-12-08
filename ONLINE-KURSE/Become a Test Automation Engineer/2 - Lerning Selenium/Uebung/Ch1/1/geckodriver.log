@@ -1,0 +1,85 @@
+1558639245992	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.kS7PNeC32xBK"
+
+(firefox-esr:27717): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:27717): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:27717): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639256851	Marionette	INFO	Listening on port 34969
+1558639256949	Marionette	WARN	TLS certificate errors will be ignored for this session
+1558639314439	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.A2l0XpjSNdYy"
+
+(firefox-esr:27924): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:27924): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:27924): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639318077	Marionette	INFO	Listening on port 44505
+1558639318157	Marionette	WARN	TLS certificate errors will be ignored for this session
+1558639383211	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.iIzoPhbQpIxj"
+
+(firefox-esr:28119): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:28119): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:28119): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639386580	Marionette	INFO	Listening on port 41145
+1558639386631	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.warn: LoginRecipes: getRecipes: falling back to a synchronous message for: https://selenium-blog.herokuapp.com
+console.warn: nsLoginManager: searchLogins: `formSubmitURL` or `httpRealm` is recommended
+1558639467613	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.HehL0J0PXkhF"
+
+(firefox-esr:28310): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:28310): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:28310): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639471344	Marionette	INFO	Listening on port 43121
+1558639471426	Marionette	WARN	TLS certificate errors will be ignored for this session
+1558639665402	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.L5k2C3cYQArC"
+
+(firefox-esr:28588): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:28588): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:28588): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639668928	Marionette	INFO	Listening on port 39171
+1558639669015	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+(/usr/lib/firefox-esr/firefox-esr:28638): dconf-WARNING **: Unable to open /var/lib/flatpak/exports/share/dconf/profile/user: Keine Berechtigung
+console.log: Accessibility service init or shutdown observer does not exist.
+console.log: Accessibility service init or shutdown observer does not exist.
+console.log: Accessibility service init or shutdown observer does not exist.
+console.log: Accessibility service init or shutdown observer does not exist.
+console.log: Accessibility service init or shutdown observer does not exist.
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1558639773631	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.gZZI04lVIDCv"
+
+(firefox-esr:28833): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:28833): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:28833): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639776895	Marionette	INFO	Listening on port 35233
+1558639776971	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.
+JavaScript error: resource://gre/modules/Sqlite.jsm, line 826: Error: Connection is not open.
+JavaScript error: resource://gre/modules/Sqlite.jsm, line 826: Error: Connection is not open.
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1558639790920	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.wpucyNrg8q85"
+
+(firefox-esr:28999): Gtk-WARNING **: Theme directory 48/mimetypes of theme Qogir has no size field
+
+
+(firefox-esr:28999): Gtk-WARNING **: Theme parsing error: <data>:1:34: Expected ')' in color definition
+
+(firefox-esr:28999): Gtk-WARNING **: Theme parsing error: <data>:1:78: Expected ')' in color definition
+1558639794310	Marionette	INFO	Listening on port 45621
+1558639794343	Marionette	WARN	TLS certificate errors will be ignored for this session
+console.log: Accessibility service init or shutdown observer does not exist.

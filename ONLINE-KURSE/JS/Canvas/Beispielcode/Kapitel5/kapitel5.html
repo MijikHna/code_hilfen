@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas Example</title>
+    <style type="text/css">
+        .canvas-bsp {
+            border: dotted 3px gray;
+            background-color: lightgrey
+        }
+    </style>
+
+    <script>
+        window.addEventListener("load", function () {
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+
+                }
+
+            }
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1>Canvas Example</h1>
+    <div id="content">
+        <p>This document contents our first canvas example</p>
+
+        <canvas id="canvas1" class="canvas-bsp" width="400" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+
+    </div>
+
+</body>
+
+</html>

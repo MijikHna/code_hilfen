@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas Example</title>
+    <style type="text/css">
+        .canvas-bsp {
+            border: dotted 3px gray;
+            background-color: lightgrey
+        }
+    </style>
+
+    <script>
+        window.addEventListener("load", function () {
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    //Unterkapitel 1 - Drawing shadows
+                    //Teil 1 
+                    ctx.shadowColor = "#000000";
+                    ctx.shadowOffsetX = 10;
+                    ctx.shadowOffsetY = 10;
+                    ctx.shadowBlur = 15;
+
+                    ctx.fillStyle = "rgba(0,0,255,1)";
+                    ctx.fillRect(20, 20, 200, 100);
+
+                    //Teil 2
+                    var theString = "Text in Canvas";
+                    ctx.fillStyle = "green";
+                    ctx.shadowColor = "rgba(0,100,100,0.8)";
+                    ctx.shadowOffsetX = -5;
+                    ctx.shadowOffsetY = -10;
+                    ctx.shadowBlur = 15;
+                    ctx.font = "25pt Georgia";
+                    ctx.fillText(theString, 250, 75);
+
+                    //Teil3
+                    ctx.lineCap = "round";
+                    ctx.lineWidth = 25;
+                    ctx.strokeStyle = "red";
+                    ctx.shadowColor = "rgba(150,0,150,0.8)";
+                    ctx.shadowOffsetX = -5;
+                    ctx.shadowOffsetY = -10;
+                    ctx.shadowBlur = 15;
+                    ctx.beginPath();
+                    ctx.moveTo(50, 200);
+                    ctx.lineTo(450, 200);
+                    ctx.stroke();
+                }
+            }
+            //Unterkapitel 2 - Using Patterns
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    //Bsp 1 - Image
+                    var patImg = new Image();
+                    patImg.onload = function () {
+                        ctx.fillStyle = ctx.createPattern(patImg, "repeat");
+                        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    };
+                    patImg.src = "../../hand.png"
+
+                    //Bsp 2 - aus Video
+                    /*
+                    setTimeout(function () {
+                        var vid = document.getElementById("vidEl");
+                        var theCanvas = document.getElementById("canvas1");
+                        var ctx = theCanvas.getContext("2d");
+                        var vidPat = ctx.createPattern(vid, "repeat");
+                    }, 5000); //5 sec Warten, dann den Frame aus dem Video nehmen
+                    ctx.fillStyle = vidPat;
+                    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    */
+                    //Bsp 3 - Pattern aus anderem Canvas
+                    var patCanvas = document.getElementById("patCanv");
+                    var patCtx = patCanvas.getContext("2d");
+                    patCtx.strokeStyle = "red";
+                    patCtx.lineWidth = 2;
+                    patCtx.beginPath();
+                    patCtx.moveTo(0, 0);
+                    patCtx.lineTo(25, 25);
+                    patCtx.stroke();
+
+                    var strokePat = ctx.createPattern(patCanvas, "repeat");
+                    ctx.strokeStyle = strokePat;
+                    ctx.lineWidth = 25;
+                    ctx.strokeRect(50, 50, 200, 200);
+                }
+            }
+
+            //Unterkapitel 3 - Using gradients
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    var linGrad = ctx.createLinearGradient(20, 20, 20, 280);
+                    linGrad.addColorStop(0, "#f00");
+                    linGrad.addColorStop(0.5, "#00f");
+                    linGrad.addColorStop(1.0, "#0f0");
+
+                    ctx.fillStyle = linGrad;
+                    ctx.fillRect(20, 20, 200, 260);
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(20, 20, 200, 260);
+
+                    var radGrad = ctx.createRadialGradient(525, 150, 20, 525, 150, 100);
+                    radGrad.addColorStop(0, "#f00");
+                    radGrad.addColorStop(0.5, "#00f");
+                    radGrad.addColorStop(1.0, "#0f0");
+
+                    ctx.fillStyle = radGrad;
+                    ctx.beginPath();
+                    ctx.arc(525, 150, 100, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    ctx.fill();
+
+                }
+            }
+            //Unterkapitel 4 - Images and videos
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    var scrImg = document.getElementById("img1"); //kann auch display:none haben
+                    ctx.drawImage(scrImg, 0, 0);
+
+                    ctx.drawImage(scrImg, 50, 50, 350, 150);
+
+                    ctx.drawImage(scrImg, 350, 200, 125, 100, 50, 50, 125, 100);
+
+                    //Bsp Video abspielen und es mit Canvas rendern
+                    function drawVidFram() {
+                        var theCanvas = document.getElementById("canvas1");
+                        var ctx = theCanvas.getContext("2d");
+                        var srcVid = document.getElementById("vid1");
+
+                        ctx.drawImage(srcVid, 0, 0, ctx.canvas, width, ctx.canvas.height);
+                    }
+                    requestAnimationFrame(
+                        drawVidFram
+                    ); //ist BrowserFunktion, die drawVidFram aufruft, wenn Browser sich aktualisiert -> Ergebnis Video wird im Canvas abgespielt
+                }
+            }
+            //Unterkapitel 5 - clipping paths
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    var scrImg = document.getElementById("img1"); //kann auch display:none haben
+
+                    //cicle clipping path erstellen
+                    ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, 150, 0, 2 * Math.PI);
+                    ctx.clip();
+                    //arbitrary clipping path erstellen
+                    ctx.beginPath();
+                    ctx.moveTo(105, 200);
+                    ctx.lineTo(250, 25);
+                    ctx.lineTo(525, 20);
+                    ctx.lineTo(475, 285);
+                    ctx.clip();
+
+                    //Image ins Canvas rendern
+                }
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="../../test.css">
+</head>
+
+<body>
+    <h1>Canvas Example</h1>
+    <div id="content">
+        <p>This document contents our first canvas example</p>
+
+        <canvas id="canvas1" class="canvas-bsp" width="700" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+        <canvas id="patCanv" class="canvas-bsp" width="700" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+    </div>
+
+</body>
+
+</html>

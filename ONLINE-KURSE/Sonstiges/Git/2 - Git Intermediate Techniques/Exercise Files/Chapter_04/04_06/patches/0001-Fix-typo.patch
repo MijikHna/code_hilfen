@@ -1,0 +1,20 @@
+From 2d1991d525d2137a876883445b577cd223d182f8 Mon Sep 17 00:00:00 2001
+From: Kevin Skoglund <someone@nowhere.com>
+Date: Fri, 26 Jan 2018 10:59:09 -0500
+Subject: [PATCH 1/2] Fix typo
+
+---
+ README.md | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/README.md b/README.md
+index eb84f95..7646b91 100644
+--- a/README.md
++++ b/README.md
+@@ -1,2 +1 @@
+-This is a demonstraton repository for Git Intermediate Techniques.
+-
++This is a demonstration repository for Git Intermediate Techniques.
+-- 
+2.10.1 (Apple Git-78)
+

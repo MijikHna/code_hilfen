@@ -1,0 +1,4 @@
+#content, #example{
+    min-height: 200px;
+    background-color: aqua;
+}

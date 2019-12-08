@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel= "stylesheet" href="../css/style.css" />
+
+    <script src="../../jquery-3.4.1.js"></script>
+
+    <script>
+        $("document").ready(function(){
+           $("#getcontent").click(getContent); //Click-Event für #getcontent registrieren
+           $("#loadhtml").click(loadHTML);
+               
+        });
+        
+        function getContent () {
+            $.ajax("samplecontent.txt", //eigentlich ist/sollte URL
+            {
+                type: "GET", //Typ des Requests
+                //url: "url",
+                //data: "data",
+                dataType: "text", //welche Daten vom Server erwartet werden
+                success: setContent  //wenn Ajax-Request funtioniert, welche Funktion ausgeführt werden soll
+            });
+        }
+
+        function setContent(data, status, jqxhr) {
+            $("#example").text(data);
+        }
+
+        function loadHTML(params) {
+            $("#example").load("video1.html"); //in #example video.html "reinladen"
+        }
+
+    </script>
+
+</head>
+<body>
+    <div>Test</div>
+    <input type="button" value="Get Content" id="getcontent"/>
+    <input type="button" value="Load HTML" Content" id="loadhtml"/>
+    <div id="example"></div>
+</body>
+</html>

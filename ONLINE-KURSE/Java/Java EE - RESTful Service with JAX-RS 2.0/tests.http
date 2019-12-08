@@ -1,0 +1,3 @@
+POST http://localhost:55554/bankservices/kontos/create/betrag/400/username/Peter
+###
+GET http://localhost:55554/bankservices/kontos/all

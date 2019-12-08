@@ -1,0 +1,32 @@
+From e24cf053950621f542ac192b771c74ecf53cdf3f Mon Sep 17 00:00:00 2001
+From: Kevin Skoglund <someone@nowhere.com>
+Date: Fri, 26 Jan 2018 10:59:25 -0500
+Subject: [PATCH 2/2] Update shopping items
+
+---
+ shopping.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/shopping.txt b/shopping.txt
+index bb9983d..80de874 100644
+--- a/shopping.txt
++++ b/shopping.txt
+@@ -1,12 +1,12 @@
+ Shopping List
+ 
+-apples
++red apples
+ 6 bananas
+-yogurt
++vanilla yogurt
+ 2% milk
+ wheat bread
+ cereal
+-eggs
++12 eggs
+ bacon
+ orange juice
+ grapes
+-- 
+2.10.1 (Apple Git-78)
+

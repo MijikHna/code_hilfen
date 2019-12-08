@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Canvas Example</title>
+    <style type="text/css">
+        .canvas-bsp {
+            border: dotted 3px gray;
+            background-color: lightgrey
+        }
+    </style>
+
+    <script>
+        window.addEventListener("load", function () {
+            //Unterkapitel 1 - Color and Styles
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    // Step 1
+                    ctx.fillStyle = "green";
+                    ctx.fillRect(20, 20, 100, 100); //x,y,breite, länge
+                    ctx.strokeStyle = "rgba(0,0,255,1)";
+                    ctx.lineWidth = 5
+
+                    //Step 2
+                    ctx.strokeRect(20, 20, 100, 100);
+
+
+                    // 1 - stroked Rechtangel
+                    ctx.strokeStyle = "yellow";
+                    ctx.lineWidth = 5;
+                    ctx.strokeRect(25, 25, 100, 125);
+                    //2 - filled Rectangel
+                    ctx.fillStyle = "blue";
+                    ctx.fillRect(175, 25, 100, 125);
+
+                    //3 - stroked + filled
+                    ctx.strokeStyle = "red";
+                    ctx.fillStyle = "yellow";
+                    ctx.lineWidth = 10;
+                    ctx.fillRect(325, 25, 100, 125);
+                    ctx.strokeRect(325, 25, 100, 125);
+
+                    //clear a rectangle
+                    ctx.clearRect(15, 75, 450, 50); //~Radirgummi
+                }
+            }
+
+            // Unterkapitel 2 - Rectangels
+            var theCanvas = document.getElementById("canvas2");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+
+                    // 1 - stroked Rechtangel
+                    ctx.strokeStyle = "yellow";
+                    ctx.lineWidth = 5;
+                    ctx.strokeRect(25, 25, 100, 125);
+                    //2 - filled Rectangel
+                    ctx.fillStyle = "blue";
+                    ctx.fillRect(175, 25, 100, 125);
+
+                    //3 - stroked + filled
+                    ctx.strokeStyle = "red";
+                    ctx.fillStyle = "yellow";
+                    ctx.lineWidth = 10;
+                    ctx.fillRect(325, 25, 100, 125);
+                    ctx.strokeRect(325, 25, 100, 125);
+
+                    //clear a rectangle
+                    ctx.clearRect(15, 75, 450, 50); //~Radirgummi
+                }
+            }
+
+
+
+            //Unterkapitel 3 - Lines
+            // 1 - lines of varying width
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.lineWidth = 0;
+                    ctx.strokeStyle = "black";
+                    for (var i = 0; i < 10; i++) {
+                        ctx.beginPath();
+                        ctx.lineWidth = i + 1;
+                        ctx.moveTo(25, 25 + i * 15);
+                        ctx.lineTo(475, 25 + i * 15);
+                        ctx.stroke();
+                    }
+                }
+            }
+            //2 - lineCap endings
+            var theCanvas = document.getElementById("canvas2");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.strokeStyle = "green";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(50, 20);
+                    ctx.lineTo(50, 180);
+                    ctx.lineTo(450, 20);
+                    ctx.lineTo(450, 180);
+                    ctx.stroke();
+
+                    //butt-Edning
+                    ctx.lineWidth = 25;
+                    ctx.strokeStyle = "black";
+                    ctx.lineCap = "butt";
+                    ctx.beginPath();
+                    ctx.moveTo(50, 50);
+                    ctx.lineTo(450, 50);
+                    ctx.stroke();
+
+                    //round-Ending
+                    ctx.lineWidth = 25;
+                    ctx.strokeStyle = "black";
+                    ctx.lineCap = "round";
+                    ctx.beginPath();
+                    ctx.moveTo(50, 100);
+                    ctx.lineTo(450, 100);
+                    ctx.stroke();
+
+                    //square
+                    ctx.lineWidth = 25;
+                    ctx.strokeStyle = "black";
+                    ctx.lineCap = "square";
+                    ctx.beginPath();
+                    ctx.moveTo(50, 150);
+                    ctx.lineTo(450, 150);
+                    ctx.stroke();
+
+
+                }
+            }
+
+            //3 - Join-Typen
+            var theCanvas = document.getElementById("canvas3");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+
+                    ctx.lineWidth = 15;
+                    ctx.strokeStyle = "black";
+
+                    // Join-typ 1
+                    ctx.lineJoin = "round";
+                    ctx.beginPath();
+                    ctx.moveTo(25, 150);
+                    ctx.lineTo(75, 150);
+                    ctx.lineTo(125, 50);
+                    ctx.stroke();
+                    // Join-typ 1
+                    ctx.lineJoin = "bevel";
+                    ctx.beginPath();
+                    ctx.moveTo(175, 150);
+                    ctx.lineTo(225, 50);
+                    ctx.lineTo(275, 50);
+                    ctx.stroke();
+                    // Join-typ 1
+                    ctx.lineJoin = "miter";
+                    ctx.beginPath();
+                    ctx.moveTo(325, 150);
+                    ctx.lineTo(375, 150);
+                    ctx.lineTo(425, 50);
+                    ctx.stroke();
+
+                }
+            }
+
+            //4 - Dashed Lines
+            var theCanvas = document.getElementById("canvas4");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.lineWidth = 15;
+                    ctx.strokeStyle = "black";
+
+                    ctx.setLineDash([5, 10]);
+                    ctx.beginPath();
+                    ctx.moveTo(50, 50);
+                    ctx.lineTo(450, 50);
+                    ctx.stroke();
+
+                    ctx.setLineDash([15, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(50, 100);
+                    ctx.lineTo(450, 100);
+                    ctx.stroke();
+
+                    ctx.setLineDash([]); //mit leerem Array wird es solid
+                    ctx.beginPath();
+                    ctx.moveTo(50, 150);
+                    ctx.lineTo(450, 150);
+                    ctx.stroke();
+
+                }
+            }
+            //Unterkapitel 4 - The Canvas state
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.strokeStyle = "red";
+                    ctx.fillStyle = "yellow";
+                    ctx.lineWidth = 10;
+
+                    ctx.fillRect(25, 25, 100, 125);
+                    ctx.strokeRect(25, 25, 100, 125);
+
+                    //save
+                    ctx.save();
+
+                    ctx.strokeStyle = "green";
+                    ctx.fillStyle = "blue";
+                    ctx.lineWidth = 5;
+                    ctx.fillRect(175, 25, 100, 125);
+
+                    ctx.restore();
+                    ctx.fillRect(325, 25, 100, 125);
+                    ctx.strokeRect(325, 25, 100, 125);
+                }
+            }
+            //Unterteil 5 - Arcs
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.strokeStyle = "blue";
+                    ctx.fillStyle = "red";
+                    ctx.lineWidth = 5;
+
+                    ctx.beginPath();
+                    ctx.arc(50, 150, 100, 0, 0.5 * Math.PI);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(300, 150, 100, 0, Math.PI, true);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(550, 150, 100, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+            // Unterkapiel 6 - Paths
+            var theCanvas = document.getElementById("canvas1");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.strokeStyle = "blue";
+                    ctx.fillStyle = "red";
+                    ctx.lineWidth = 5;
+
+                    //Pfad 1    
+                    ctx.beginPath();
+                    ctx.moveTo(25, 175);
+                    ctx.lineTo(50, 25);
+                    ctx.lineTo(125, 50);
+                    ctx.lineTo(175, 175);
+                    ctx.stroke();
+
+                    //Pfad 2
+                    ctx.strokeStyle = "orange";
+                    ctx.beginPath();
+                    ctx.moveTo(225, 175);
+                    ctx.lineTo(250, 25);
+                    ctx.lineTo(325, 50);
+                    ctx.lineTo(375, 175);
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    //Pfad 3
+                    ctx.strokeStyle = "orange";
+                    ctx.fillStyle = "yellow"
+                    ctx.beginPath();
+                    ctx.moveTo(425, 175);
+                    ctx.lineTo(450, 25);
+                    ctx.lineTo(525, 50);
+                    ctx.lineTo(575, 175);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+            // Unterkapitel 6 - Bezier and quadratic curves
+            var theCanvas = document.getElementById("canvas3");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    ctx.strokeStyle = "blue";
+                    ctx.lineWidth = 5;
+
+                    //Bezierpunkt
+                    ctx.beginPath();
+                    ctx.moveTo(50, 200);
+                    ctx.bezierCurveTo(50, 100, 200, 100, 200, 150);
+                    ctx.stroke();
+                    //Controllpunkte anzeigen
+                    ctx.strokeStyle = "rgba(0,0,0,25)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.lineTo(50, 200);
+                    ctx.lineTo(50, 100);
+                    ctx.lineTo(200, 100);
+                    ctx.lineTo(200, 100);
+                    ctx.stroke();
+
+                    //Qudratische Kurve
+                    ctx.strokeStyle = "green";
+                    ctx.lineWidth = 5;
+
+                    //Bezierpunkt
+                    ctx.beginPath();
+                    ctx.moveTo(400, 200);
+                    ctx.quadraticCurveTo(400, 100, 600, 150);
+                    ctx.stroke();
+                    //Controllpunkte anzeigen
+                    ctx.strokeStyle = "rgba(0,0,0,25)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.lineTo(400, 200);
+                    ctx.lineTo(400, 100);
+                    ctx.lineTo(600, 150);
+                    ctx.stroke();
+
+
+                }
+            }
+            //Unterkapitel 8 - Drawing text
+            var theCanvas = document.getElementById("canvas3");
+            if (theCanvas && theCanvas.getContext) {
+                var ctx = theCanvas.getContext("2d");
+                if (ctx) {
+                    var theString = "Drawing Text in Canvas";
+                    var startX = 20;
+
+                    //Teil 1
+                    ctx.font = "25px Georgia";
+                    ctx.fillText(theString, startX, 60);
+
+                    ctx.fillStyle = "blue";
+                    ctx.fillText(theString, startX, 100);
+
+                    //Teil 2
+                    ctx.font = "32px Verdana";
+                    ctx.fillStyle = "yellow";
+                    ctx.strokeStyle = "rgba(0,255,0,0.8)";
+                    ctx.fillText(theString, startX, 160);
+                    ctx.strokeText(theString, startX, 160);
+
+                    // Unterstrick, dabei mit MeasureText messen wie lang der String ist
+                    var textW = ctx.measureText(theString);
+                    ctx.beginPath();
+                    ctx.strokeStyle = "black";
+                    ctx.moveTo(startX, 170);
+                    ctx.lineTo(startX + Math.round(textW.width), 170);
+                    ctx.stroke();
+                }
+            }
+
+        });
+    </script>
+
+</head>
+
+<body>
+    <h1>Canvas Example</h1>
+    <div id="content">
+        <p>This document contents our first canvas example</p>
+
+        <canvas id="canvas1" class="canvas-bsp" width="700" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+
+        <canvas id="canvas2" class="canvas-bsp" width="500" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+        <canvas id="canvas3" class="canvas-bsp" width="700" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+
+        <canvas id="canvas4" class="canvas-bsp" width="500" height="300">
+            Your Browser does not support Canvas
+        </canvas>
+
+
+    </div>
+
+</body>
+
+</html>
