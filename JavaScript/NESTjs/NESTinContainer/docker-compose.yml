@@ -1,0 +1,18 @@
+version: "3.7"
+services: 
+  nestjs-server:
+    build: 
+      context: ./Docker/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/NESTjs/NESTinContainer/Docker/Dockerfile"
+    image: nestjs_lernen/nestjs-server
+    hostname: nestjs-server
+    container_name: nestjs-server
+    restart: on-failure
+    ports:
+      - "8000:8000"
+      - "4200:4200"
+      - "3000:3000"
+    volumes:
+      - ./code:/app/code/
+    tty: true
+  

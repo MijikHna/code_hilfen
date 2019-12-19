@@ -1,0 +1,5 @@
+### GET-Request 01
+GET http://localhost:3000
+
+### GET-Request 02
+GET http://localhost:3000/index.html

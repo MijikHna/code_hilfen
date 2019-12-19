@@ -12,8 +12,10 @@
     * German-Code Spell Checker
     * Github Markdown Preview
     * GitLens - Git supercharged
+    * Highlight Matching Tag
     * HTML CSS Support
     * HTML Snippets
+    * Indented Block Highlighting
     * IntelliSence for CSS class name
     * Java Test Runner
     * jQuery Cde Snippets
