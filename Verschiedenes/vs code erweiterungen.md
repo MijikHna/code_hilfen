@@ -13,6 +13,7 @@
     * Github Markdown Preview
     * GitLens - Git supercharged
     * Highlight Matching Tag
+        * `"blockhighlight.background": ["220","220","75",".05"]`
     * HTML CSS Support
     * HTML Snippets
     * Indented Block Highlighting
