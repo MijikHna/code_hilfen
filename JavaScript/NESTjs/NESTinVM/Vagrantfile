@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "debian10_basic"
   #config.vm.name = "NestJS-VM"
-  config.vm.hostname = "nestjs-vm"
+  config.vm.hostname = "nestjs-vm-02"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "/media/kirill/WindowsD/Programmieren/NESTjs/NESTinVM/code", "/home/vagrant/code"
+  config.vm.synced_folder "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinVM/code", "/home/vagrant/code"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
     vb.gui = false
-    vb.name = "nestjs-vm"
+    vb.name = "nestjs-vm-02"
   #
   #   # Customize the amount of memory on the VM:
     vb.memory = "3072"
@@ -79,17 +79,37 @@ Vagrant.configure("2") do |config|
     sudo apt update
     sudo apt-get install -y nodejs
 
+    #install yarn
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
+    sudo apt update && \
+    sudo apt install -y yarn
+
     #install nest
     sudo npm install -g @nestjs/cli
 
+    #install angualr
+    sudo npm install -g @angular/cli
+
+    #install synp
+    sudo npm install -g synp
+    #synp --source-file /home/vagrant/code/test-project/package-lock.json
+    #synp --source-file /home/vagrant/code/test-project/package-lock.json
+    
+
     #install PostgresQL
-    sudo touch etc/apt/sources.list.d/pgdg.list
-    sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> etc/apt/sources.list.d/pgdg.list
+    sudo touch /etc/apt/sources.list.d/pgdg.list
+    sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
     sudo apt-get update
 
     sudo apt-get -y install postgresql-11
     #create Project
       #fählt weg - wird per Volume-Map erstellt
+      
+
+    #dann ausführen
+    #npm install 
+    #npm run start:debug
   SHELL
 end

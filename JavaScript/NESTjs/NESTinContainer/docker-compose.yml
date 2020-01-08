@@ -2,17 +2,63 @@ version: "3.7"
 services: 
   nestjs-server:
     build: 
-      context: ./Docker/.
-      dockerfile: "/media/kirill/WindowsD/Programmieren/NESTjs/NESTinContainer/Docker/Dockerfile"
+      context: ./Docker/Nest/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker/Nest/Dockerfile"
     image: nestjs_lernen/nestjs-server
     hostname: nestjs-server
     container_name: nestjs-server
     restart: on-failure
     ports:
-      - "8000:8000"
-      - "4200:4200"
       - "3000:3000"
+      - "9229:9229"
     volumes:
-      - ./code:/app/code/
-    tty: true
+      - ./code:/app
+    depends_on: 
+      - postgres-db
+    networks: 
+      nestjs_network:
+        ipv4_address: 10.100.120.10
+    command: [ "nest", "start", "--debug", "10.100.120.10:9229", "--watch" ] 
+
+  angular-server:
+    build: 
+      context: ./Docker/Angular/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker/Angular/Dockerfile"
+    image: nestjs_lernen/angular-server
+    hostname: angular-server
+    container_name: angular-server
+    restart: on-failure
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./code:/app
+    depends_on: 
+      - nestjs-server
+    networks: 
+      nestjs_network:
+        ipv4_address: 10.100.120.20
+    #command: [ /bin/bash ]
+
+  postgres-db:
+    build: 
+      context: ./Docker/Postgres/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker/Postgres/Dockerfile"
+    image: nestjs_lernen/postgres-db
+    hostname: postgres-db
+    container_name: postgres-db
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    networks: 
+      nestjs_network:
+        ipv4_address: 10.100.120.30
+    #command: [ /bin/bash ]
+
+networks:
+  nestjs_network:
+      name: nestjs_network
+      ipam: 
+          driver: default
+          config: 
+              - subnet: "10.100.120.0/24"
   

@@ -184,7 +184,53 @@ Bsp: für AuthN/AuthZ
     * Bsp Versioning in Header mit curl: `curl -I https://... -H "Accept: application/vnd.github.v3+json"`
 * Bsp Verioning in URL: `curl -X POST "https://../2010-04-01/Accounts/../`  - 2010-04-01 ist die Version
 #### Choosing media types and processing content
+* Daten:
+    * JSON - Name-Value:
+        * Nachteil: Daten sind hat zu erweitern
+    * etwas eigenes erstellen
+* Media-Type:
+    * jedes Datenformat hat Pattern in der Verwendung
+    * drei gängige Formate:
+        * Collectoin + JSON
+            * um mit Gruppen von Collections zu arbeiten
+            * kann einzel Item als Menge darstellen
+        * HAL - Hypertext Appliation Language (Empfehlung): (Format = JSON)
+            * Teil Payload/Body in zwei Teile: 1=Daten, 2=Links
+            * kann einzel Item als Menge darstellen
+        * ION Hypertype Type (Format = JSON)
+        * es gibt noch viele weiere Media-Types
+* <- für alles gibt es schon fertige Bibs
 #### Hypermedia approaches
+* Hyper + Media
+    * Hyper = Media ist nicht linear => per Link selber, wohin man weiter geht
+* **POSTMAN** = `curl`
+    * man kann mit POSTMAN mit github-API spielen
 #### Advanced HTTP headers: Content negotiation and caching
+* Content Negotiation
+    * = Browser (Client) und Server einigen sich auf einen Format
+    * = Accept-Headers
+* Caching 
+    * ETag = Hash von Response
+    * Wenn Hash anders => auch Body wird nochmal gesendet.
 #### Documentation approaches
+* keine PDFs
+* besser Password geschützt
+* CMS => Versionierung der Changes möglich
+* Ziele:
+    * Code snippets friendly -> für Copy-Paste
+    * Page history
+    * muss leicht updateable sein
+    * muss Suchoptionen haben
+    * => Tools:
+        * Wikis
+            * Bsp: Jekyll (Erweiterbar duch Plugin)
+            * Bsp: Slate (basiert auf Jekyll)
 #### SDK design considerations
+* ??
+
+### Nachtrag.
+* meetup.com -> Meetings in der Nähe
+* amundsen.com/blog -> news zu REST und API
++ Tweeter: @APINewsletter
++ events.linuxfoundation.org/events/apistrat - Konferenz
+* 

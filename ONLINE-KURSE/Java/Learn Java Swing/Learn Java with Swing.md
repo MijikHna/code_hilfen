@@ -95,8 +95,355 @@
         + `list = new JList(listModel);` - der Liste das ListModel zuweisen
 ### 4 - Events
 #### 1 - What is a Swing event?
+* User Interaction mit GUI-Interface
+* meisten Events tiggern ein Action
+    * Action = Veränderung im Zustand der Komponente
+    * Event hat Info der Quelle des Events
+* Swing benutzt *delegation-based-event Model*
+    * Erhalter hörchen auf Event
+    * wenn Event passiert, werden alle registierten Hörcher informiert
+    * Vorteil: Code der Action(Event-Handler) ist getrennt von sonstigem Code 
+        * vershiedene Kopmonenten haben verschieden Event-Handler
+            * Button => Action Listener
+            * ChechBox => Item Listener
+* Event-Bahandlung besteht aus 3 Schitten: 
+    1. Listener Interface implementieren z.B für Button => ActionListener implementierrn
+    2. Instanz des Listener definieren
+    3. Listener an der Komponente registrieren 
+* Bsp: 
+```java
+class Test implements ActionListener {
+    ActionListner al = new ActionListner(){ //1
+        public void actionPerformed(ActionEvent ae){ //2 wegen Interface muss man actionPerfomed() überschreiben
+            System.out.println("Action ausgeführt");
+        };
+    };
+    button.addActionListener(al); //3
+} 
+```
+* manche Listener-Interfaces können mehrere Methoden haben z.B MouseListener-Interface
+* man kann auch Adapter-Klassen benutzen -> sie erstellen automatisch leeren Listener-Interface-Methoden und man überschreibt dann nur die, die man wirklich braucht
 #### 2 - Event listeners
-#### 3 - How to handle an event
+* Listener = Interfaces, die für Behandlung des Events zuständing sind
+* an Component müssen die Event Listener registriert werden
+* alle Listeners werden von EventListern extended
+* entsprechende Listern haben eigenlciht passenden InterfaceNamen
+* Bsp: ItemListenerEvent.java -> 3 ChechBoxen auswählen
+```java
+package swingexamples;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Producer
+ */
+public class ItemListenerExample extends JPanel implements ItemListener{
+
+    JFrame frame;
+    JPanel panel;
+    JCheckBox checkBox1, checkBox2, checkBox3;
+
+    public ItemListenerExample() {
+        frame = new JFrame("Item Listener Example");
+        frame.setSize(400, 400);
+        panel = new JPanel();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        checkBox1 = new JCheckBox();
+        checkBox1.setText("Check Box 1");
+        checkBox2 = new JCheckBox();
+        checkBox2.setText("Check Box 2");
+        checkBox3 = new JCheckBox();
+        checkBox3.setText("Check Box 3");
+
+        //3 - Registierung
+        chechBox1.addItemListener(this);
+        chechBox2.addItemListener(this);
+        chechBox3.addItemListener(this):
+
+        panel.add(checkBox1);
+        panel.add(checkBox2);
+        panel.add(checkBox3);
+
+        frame.setContentPane(panel);
+    }
+
+    public static void main(String ars[]) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ItemListenerExample().setVisible(true);
+            }
+        });
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent ie){
+        //throw new UnsupportedOperationException("Not supported yed");
+        //chechen, welche CheckBox ausgewählt wurde 
+        Object source = ie.getItemSelecteable();
+        if(source == checkBox1){
+            System.out.println("ChechBox1"):
+        }
+        else if (source = chechBox2){
+            System.out.println("ChechBox2"):
+        }
+        else{
+            System.out.println("ChechBox3"):
+        }
+    }
+}
+```
+#### 3 - How to handle an event
+* Event Handler = Code, der ausgeführt wird, wenn Event getriggerd wird
+* Componten geneieren Events
+* Listener horchen dann, ob diese Event dann passiert ist
+* und der Listener ruft Event Hanlder
+    * Handler muss Event-Quelle kennen.
+* wenn Event passiert ist, wird ein Event-Object erstellt und and den entsprechenden Listener gesendet. Diese Object hat dann Info über Event-Quelle und genauen Event-Action z.B Button geklickt
+* Bsp: EventExample.java -> 9 Buttons 1 bis 9, die Farben generieren
+```java
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package swingexamples;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+
+/**
+ *
+ * @author Producer
+ */
+public class EventExample extends javax.swing.JFrame implements ActionListener{
+
+    /**
+     * Creates new form EventExample
+     */
+    public EventExample() {
+        initComponents();
+        setSize(500, 500);
+        jButton1.addActionListener(this);
+        jButton2.addActionListener(this);
+        //usw
+    }
+
+    private Color randomColor() {
+        Random num = new Random();
+        int randCol = num.nextInt(9) + 1;
+        switch (randCol) {
+        case 1:
+            return Color.yellow;
+        case 2:
+            return Color.red;
+        case 3:
+            return Color.blue;
+        case 4:
+            return Color.green;
+        case 5:
+            return Color.orange;
+        case 6:
+            return Color.cyan;
+        case 7:
+            return Color.pink;
+        case 8:
+            return Color.magenta;
+        case 9:
+            return Color.white;
+        default:
+            return Color.black;
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Random Color");
+        setSize(new java.awt.Dimension(500, 500));
+
+        jPanel1.setLayout(new java.awt.GridLayout(3, 3, 10, 10));
+
+        jButton1.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton1.setText("1");
+        jPanel1.add(jButton1);
+
+        jButton2.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton2.setText("2");
+        jPanel1.add(jButton2);
+
+        jButton3.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton3.setText("3");
+        jPanel1.add(jButton3);
+
+        jButton4.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton4.setText("4");
+        jPanel1.add(jButton4);
+
+        jButton5.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton5.setText("5");
+        jPanel1.add(jButton5);
+
+        jButton6.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton6.setText("6");
+        jPanel1.add(jButton6);
+
+        jButton7.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton7.setText("7");
+        jPanel1.add(jButton7);
+
+        jButton8.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton8.setText("8");
+        jPanel1.add(jButton8);
+
+        jButton9.setFont(new java.awt.Font("Papyrus", 0, 36)); // NOI18N
+        jButton9.setText("9");
+        jPanel1.add(jButton9);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(
+                jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(
+                jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel. For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(EventExample.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(EventExample.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(EventExample.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(EventExample.class.getName()).log(java.util.logging.Level.SEVERE, null,
+                    ex);
+        }
+        // </editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EventExample().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JPanel jPanel1;
+    // End of variables declaration//GEN-END:variables
+
+    //ActionListener-Inteface Methoden überschreiben
+    //ist eigentlich Event-Handler
+    @Override
+    public void actoinPerformed(ActionEvent ae){ 
+        //throw new UnsupportedOperationException("Not supported yet");
+        
+        Color col = randomColor();
+        if(ae.getSource() == jButton1){ //welches Button geklickt wurde
+           jButton1.setBackground(col);
+        }
+        if(ae.getSource() == jButton2){ //welches Button geklickt wurde
+           jButton2.setBackground(col);
+        }
+        //usw.
+
+    }
+}
+
+```
 #### 4 - Challenge
+* GUI für Einkaufsliste
+    * Labels + Textfelder
+    * 3 Buttons. Add, Print, Clear
+    * Event Listener + Event Handler für die Buttons 
 #### 5 - Solution
+* Lösung ist GroceryList.java
+    1. jTextField1 nach itemTxt umbennen
+    2. jButton1 nach AddBtn unbennen + für Print und Clear
+    3. TextArea1 nach list umbennen
+    4. Add-Button auswähen -> zu Events-Tab wechseln -> actionPerformed auf addButtonActionPerformed setzen => es wird automatisch die Handler-methoden erstellt
+    ```java
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt){
+        if(item.getText().length() != 0){
+            String groceryItem = item.getText();
+            list.append(groceryItem + "\n");
+            item.setText(""); //Text in TextField löschen
+        }
+    }
+    ```
+    * für print- und clear-Buttons ab 4. 
+    ```java
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt){
+        System.out.println(list.getText());
+    }
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt){
+        list.setText("");
+    }
+    ```
+    + die Listener werden von IDE automatisch registiert
+    im Konstruktor noch default Button setzen: `getRootPanel().setDefaultButton(addButton);`
+
+### Outro
++ Swing wird momentan mehr und mehr von JavaFX verdrängt
