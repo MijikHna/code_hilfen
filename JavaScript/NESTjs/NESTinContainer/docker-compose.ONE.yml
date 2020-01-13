@@ -2,17 +2,17 @@ version: "3.7"
 services: 
   nestjs-server:
     build: 
-      context: ./Docker02/Nest/.
-      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker02/Nest/Dockerfile"
-    image: nestjs_lernen/nestjs-server2
-    hostname: nestjs-server2
-    container_name: nestjs-server2
+      context: ./Docker01/Nest/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker01/Nest/Dockerfile"
+    image: nestjs_lernen/nestjs-server
+    hostname: nestjs-server
+    container_name: nestjs-server
     restart: on-failure
     ports:
       - "3000:3000"
       - "9229:9229"
     volumes:
-      - ./codeYoutube:/app
+      - ./code:/app
     depends_on: 
       - postgres-db
     networks: 
@@ -22,16 +22,16 @@ services:
 
   angular-server:
     build: 
-      context: ./Docker02/Angular/.
-      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker02/Angular/Dockerfile"
-    image: nestjs_lernen/angular-server2
-    hostname: angular-server2
-    container_name: angular-server2
+      context: ./Docker01/Angular/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker01/Angular/Dockerfile"
+    image: nestjs_lernen/angular-server
+    hostname: angular-server
+    container_name: angular-server
     restart: on-failure
     ports:
       - "4200:4200"
     volumes:
-      - .//codeYoutube:/app
+      - ./code:/app
     depends_on: 
       - nestjs-server
     networks: 
@@ -41,16 +41,16 @@ services:
 
   postgres-db:
     build: 
-      context: ./Docker02/Postgres/.
-      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker02/Postgres/Dockerfile"
-    image: nestjs_lernen/postgres-db2
-    hostname: postgres-db2
-    container_name: postgres-db2
+      context: ./Docker01/Postgres/.
+      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker01/Postgres/Dockerfile"
+    image: nestjs_lernen/postgres-db
+    hostname: postgres-db
+    container_name: postgres-db
     restart: on-failure
     ports:
       - "5432:5432"
     volumes:
-      - ./code/pg-data:/var/lib/postgresql
+      - ./code/pg-data:/var/lib/postgresql/data
     networks: 
       nestjs_network:
         ipv4_address: 10.100.120.30

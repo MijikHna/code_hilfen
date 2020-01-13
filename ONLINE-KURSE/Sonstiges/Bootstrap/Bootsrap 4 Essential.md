@@ -953,9 +953,205 @@ $(function () {
 </div>
 ```
 #### 8 - Build carousels
+* Klassen:
+    * `carousel`
+    * `slide` - von rechts nach links
+    * `carousel-fade`
+    * Schlüsselwort in TAG `target="id"`
+        * `carousel-inner` - DIV von die Images sind
+            * `carousel-item`
+            * `active`
+                * TAG-img: `d-block` und `w-100` - damit alle Images gleiche Größe haben
+                * `carousel-caption`
+        * Controls ü Indicators:
+            * Controlers:
+                * `carousel-control-prev/next` - Buttons (muss man beide machen)
+                    * `carousel-control-prev/next-icon` - Icons statt Button
+                    * `href="target"
+            * Indicators: (Punkte unten zum direkten Springen)
+                * `carousel-indicators`
+                    * `data-target="target"`
+                    * `data-slide-to="indexOfArray"`
+* Attribute für Karusel = `data-XXX` in `carousel-inner` = wie Carousel arbeiten soll
+    + `ride` -> carousel, false = starten Animation 
+    * `interval` -> 5000/item
+    * `pause` -> hover, false = Carousel ausblenden, wenn Maus nicht auf Carousel
+    * `touch`, `keyboard`, `wrap` -> true, false
+* Bsp:
+```html
+<div class="carousel slide carousel-fade" id="featured", data-ride="carousel">
+    <!-- Indicators - Buttons unten -->
+    <ol>
+        <li data-target="featured" data-slide-to="0"></li>
+        <li data-target="featured" data-slide-to="1"></li>
+        <li data-target="featured" data-slide-to="2" class="active"></li>
+    <ol>
+    <div class="carousel-inner">
+        <div class="carousel-item">
+            <img src="#" class="d-block w-100" >
+            <div class="carousel-capiton d-none d-md-block"> <!-- wenn >=mittel-dislpay wird Caption angezeigt, sonst nicht -->
+                <h3>Text</h3>
+            </div>
+        <div>
+        <div>
+            <img src="#">
+        <div>
+        <div>
+            <img src="#">
+        <div>
+    </div>
+
+    <!-- Controls - Buttons links + rechts -->
+    <a class="carousel-control-prev" href="#featured" role="button" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previos</span>
+</div>
+```
++ eventuell HIEGHT gleich machen
 #### 9 - Use scrollspy
+* Scrollen controllieren -> Oft um z.B bestimmten Teil oben fixieren, wenn as beim Scrollen erreicht wird
+* braucht (Element was getrackt werden soll):
+    * `data-spy="scroll"` - beim Element, dass man beim Scrollen tracken will
+    * `position=relative` - muss haben
+    * `data-target="ID"` - 
+    * `fixed-top` - wird dann auf diese Klassen setzen
+    * `data-offset` - wenn man Probleme mit der Positionierung von **fixed** hat
+```html
+<body data-spy="scroll", data-target="#navbar-site" data-offset="80"> <!-- ist egentlich diese margin, was gesetzt wurde, sonst wird falsch getrackt --> 
+    <nav id="navbar-site" class="navbar fixed-top">
+        <div class="container">
+            <ul>
+                <li class="nav-link"> <a class="nav-link" href="#mission">Mission</a></li>
+                <li class="nav-link"> <a href="#mission">Mission</a></li>
+            </ul>
+        </div>
+    </nav>
+</nav>
+```
++ eventeull dem Content *margin* geben, wenn von *fixed* überdeckt wird
+* <- setzt `active` bei nav->ol->li, wenn man beim Scrollen, darüber geht
+* wenn man aber auf *li* klickt, wird zu falschen Position gescrollt => Fix:
+    * volle Version von jQuery ( da Bootstrap eigentlich slim-Version von jQuery benutzt)
+    * aus github.com/planetoftheweb/scroll.js herunterladen und einfügen 
+    * `var topoffset` einstellen
 #### 10 - Toasts
+* Notifications kurz anzeigen
+* Klassen:
+    * `toast`
+        * `toast-header`
+        * `toast-body`
+    * und `data-XXXX`
+        * `animation` -> true/false
+        * `autohide` -> true/false
+        * `delay` -> in ms
+    * man muss noch JS benutzen
+        1. um Toast zu aktivieren
+        2. um Toast zu positionieren
+        * `data-dismiss="toast"`
+Bsp:
+```html
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000" style="postion:absolute, top: 1rm right: 1rm;">
+    <div class="toast-header">
+        <strong class="mr-auto">Text</strong>
+        <button type="button" class="close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body">
+        <div>Text
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <button id="showToast">lala</button>
+</div>
+
+<!-- Teil mi JS --> 
+<script>
+$(document).ready(funtion(){
+    $("#showToast").click(function(){
+        $('.toast').toast("show"); 
+    });
+});
+</script>
+```
 #### 11 - Spinners
-#### 12 - Pagination
+* Feedback an User, wenn er warten muss = sich drehendes Symbol
+* `spinner-TYP(-SIZ)`
+    * TYP: border, grow
+    * SIZ: sm
+* `text-COL` - Farbe des Spinners ändern
+* Bsp:
+```html
+<!-- Easy -->
+<span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+<span class="sr-only">Loading</span>
+
+<!-- Spinner in Button ID, da JS es ansprechen sollen kann + d-none, damit es nicht immer angezeigt wird-->
+<button>
+    <span id="mySpinner" class="d-none">
+        <span id="mySpinner" class="spinner-border text-primary " role="status" aria-hidden="true"></span>
+        <span class="sr-only">Loading</span>
+    </span>
+</button>
+
+<script>
+$(document).ready(funtion(){
+    $("#showToast").click(function(){
+        $('.toast').toast("show"); 
+    
+        $("#myToast").on("shown.bs.toast", function(){
+            $("#mySpinner").removeClass("d-none");
+        });
+
+         $("#myToast").on("hidden.bs.toast", function(){
+            $("#mySpinner").addClass("d-none");
+        });
+
+    });
+});
+</script>
+```
+#### 12 - Pagination 
+* Art der Navigation
+* `paginatipon`
+    * `page-item` + Optional `disabled`, `active`
+    * `page-link` 
+```html
+<nav aria-label="Page Navigation">
+    <ul class="pagination justify-content-center">
+        <li><a href="#" class="page-link">Lala</a><li>
+        <li><a href="#" class="page-link">Lala</a><li>
+        <li><a href="#" class="page-link disabled">Lala</a><li>
+    </ul>
+</nav>
+```
+* <- man muss es noch mit JS funktional machen
 #### 13 - Stretched links
+* Links erweitern auf Parent-DOM-Obj
+* `stretched-link` - Parent wird dann auch anklickbar
+    * muss haben
+        * Funktionert nur für *cards* und *columns*
+        * Position muss relative sein (nur cards und relative)
+```html
+<div class="cards">
+    <!-- ... -->
+    <a href="#" class="btn stretched-link">Text</a>
+</div>
+```
+* jetzt ist alles bis zu *div class="cards"* anklickbar.
 #### 14 - Embeds
+* Code-Teile aus andren Seiten importieren (code copy-pasten) z.B youtube-Video => werden aber nicht gut gestyled =>
+* `embed-resonsive`
+* `embed-responsive-SIZ`
+    * SIZ: 21by9, 16by4, 4by3 1by1
+    * `embed-responsive-item` - ist aber Optional 
+```html
+<div class="embed-responsive embed-responsive-16by9">
+    <iframe class="embed-responsive-item" ...> </iframe>
+</div>
+```
+
+### Fazin
+getbootstrap.com - Doku + weiter Tipps
+https://getbootstrap.slack.com - Bootstrap-Slack

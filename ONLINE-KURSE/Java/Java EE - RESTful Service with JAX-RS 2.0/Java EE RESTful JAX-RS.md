@@ -294,11 +294,13 @@ publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn){
 * REST sollte die richtigen Response-Codes senden
     1. per Default senden lassen
     2. per Configuration senden lassen
-* Response-Code ist wrappen in diesem Response-Objekt
-* wenn man ohne Response sendet => JAX-RS entscheidet selbst welchen Code er setzt.
-* wenn Response ist NULL => 204, sonst 200
+* HTTP-Response:
+    * Return-Wert wrappen in Resonse-Objekt und dazugehörigen HTTP-Code senden
+    * wenn man ohne Response sendet => JAX-RS entscheidet selbst welchen Code er setzt. (JAX-RS default-Responses sind zu HTTP-Code gemappt)
+    * wenn Response ist NULL => 204, sonst 200
 #### 2 - Build a response
 * für komplexe API sollte man *ResponseBuilder* benutzen. Response-Klasse benutzt *ResponseBuilder* wenn es diese Funktionen `.ok()`, `status()` aufruft.
+* man bekommt ResponseBuilder, wenn man man eine der statische Funkt z.B. `status()` von der Klasse `Response` aufruft
     * Bsp für Response Codes:
         * `Response.status(204).build();` oder `Response.noContent().build();`
         * `Response.status(202).build();` oder `Response.accepted().build();`
@@ -306,28 +308,35 @@ publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn){
         * `Response.accepted(book).build();`
 * Bsp: Alles selbst setzen: 
     * `Response.status(Response.Status.OK).language(Locale.CHINESE).type(MediaType.APPLICATION_XML).header("Custom_Header, "Value").build();`
-* eventuell muss man Response selbst setzen, da Response Probleme mit Gerenischen Typen als Body hat (dafür bietes JAX-RS Klasse `GeneriyEntity`)
-* eventuell muss man die Cookies zu Response hinzufügen (javax.ws.rs.core.NewCookie)
+* eventuell muss man Response-Body selbst setzen, da Response Probleme mit Gerenischen Typen im Body hat (dafür bietes JAX-RS Klasse `GeneriyEntity`, die dann z.B `ArrayList` wrapped und richtig darstellen kann)
+* eventuell muss man die Cookies zu Response hinzufügen (javax.ws.rs.core.NewCookie) = Cookie im Response hinzufügen:
+    * Bsp:
+    ```java
+    NewCookie cookie = new NewCookie("color", "red");
+    Response.ok(Response.Status.OK).cookie(cookie).build();
 #### 3 - How to handle errors
 * 4 Möglichkeiten auf Exceptions zu reagieren
-    1. vom Java alles machen lassen -> von von servlet Layer behandelt => 500 Server Error
-    2. Excepitions catchen -> try-catch (doppelter Code)
-    3. Wrap Exseptions in WEb-App und es mit JAX-RS behandeln -> mit WebApplicationException-Klasse behandeln. Eigentlich auch try-catch, aber im Catch wird `throw new` gemacht und `WebApplicationException(...)` aufgerufen (doppelter Code)
-    4. Manager Exception mit Exception Manager -> Exception Manager implementieren
+    1. vom Java alles machen lassen -> von von servlet Layer behandelt => 500 Server Error wird returnt
+    2. Excepitions catchen -> try-catch (doppelter Code) => und eigenen return senden
+    3. Wrap Exseptions in Web-App und es mit JAX-RS behandeln -> mit WebApplicationException-Klasse behandeln. Eigentlich auch try-catch, aber im Catch wird `throw new` gemacht und `WebApplicationException(...)` aufgerufen (doppelter Code)
+    4. Manager Exception mit Exception Manager -> Exception Manager implementieren und registrieren
 #### 4 - Implements an exception manager
+* Bsp: Exception Manager implementieren + **ISBNNotFoundException** für Bucher implementieren
 ```java
 @Provider //
-public class ISBNExceptionNotFoundManager implements ExceptionManager<ISBNNotFoundException>{
+public class ISBNExceptionNotFoundManager implements ExceptionMapper<ISBNNotFoundException>{
     @Override
     public Response toResponse(ISBNNotFoundException exception){
         return Response.status(Response.Satutus.NO_CONTENT).build();
     }
 }
+```
+* <- 
 ```java
 @GET
 @Produces(MediaType.APPLICATIN_JSON)
 @Path("{isbn: \\d{9}[\\d|X]$}")
-publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn){
+publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn) throws ISBNExceptionFoundException{
     Optional<Book> book bookRepository.getByISBN(isbn);
     if (book.isPresent(){
         return Response.ok(book.get().build());
@@ -336,13 +345,18 @@ publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn){
     throw new ISBNExceptionFoundException();
 }
 ```
+* nun, wenn die **ISBNExceptionFoundException** geworfen wird, wird sie bem *ExceptionManager* landen
 * code in BookRessource ändern, sodass es diese Exception wirft
 #### 5 - Work with HATEOAS
+* HATEOS = *Hypermedia As The Engine Of Application State* = Client kann durch Links auf der Seite navigieren ~ Link = veranlasst den Client-Zustand zu wechseln <= beim derzeitigem Zustand, muss Client wissen, welche Eingaben (welche Links verfügbar sind) er machen kann
 * 2 Möglichkeiten zu implementieren
+    1. im Client hardgecoded welche Links von wo verfügbar sind
+    2. mit HATOAS => Server liefert im Response mögliche Links
 * HATEOAS = Navigieren mit URIs
     * d.h. Response liefert Liste mit URIs die weitere Operationen erlauben
 * Bsp json
 ```json
+//...
 "links": [
     {
         "rel": "delete", //Relationship = kleine Bescheibung 
@@ -350,14 +364,17 @@ publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn){
         "type": "DELETE"
     }
 ]
+//...
 ```
 * mögliche Relationships:
-    * next, privious für Navigation
-    * self für Aktion auf aktuelle Ressource
-    * ressourceName = all
+    * *next*, *privious* für Navigation
+    * *self* für Aktion auf aktuelle Ressource
+    * *ressourceName* = all
 * Client sollte diese Links verstehen und verarbeiten können
+* => z.B um Artikel aus dem Warenkorb eines Nutzers zu löschen, wird er bestimmte URL bekommen, die nur seinen Artikel löschen kann => beim Klick auf Löschen, muss genau diese URL aufgerufen werden
 #### 6 - HATEOS and JAX-RS
-* 1 Möglichkeit -> Links zu Ressourcen in JSON
+* 1 Möglichkeit -> Links zu Ressourcen in JSON (IST BESSER)
+    + Ressource mit Eigenscahft links erweitern
 ```java
 public abstract class Hypermedia {
     private List<LinkRessource> links = new ArrayList<>();
@@ -375,14 +392,16 @@ public class LinkResource{
 Link delete = Link.fromUri(uriInfo.getBaseUriBuilder.path(getClass()).path(getClass(), "deleteBook").build(book.get().getId())).rel("delete")
 book.get().addLink(new LinkRessource(delete))
 ```
-* 2 Möglichkeit -> in HTTP-Header
+* 2 Möglichkeit -> LInks zu HTTP-Header adden
 ```java
 @Context
 private UriInfo uriInfo;
-Link delete = Link.fromUri(uriInfo.getBaseUriBuilder.path(getClass()).path(getClass(), "deleteBook").build(book.get().getId())).rel("delete").type("DELETE").build(); //Link erstellen
+Link delete = Link.fromUri(uriInfo.getBaseUriBuilder.path(getClass()).path(getClass(), "deleteBook").build(book.get().getId())).rel("delete").type("DELETE").build(); //Link erstellen = mit Builder Link in Resource-Klasse erstellen/builden
 
 Response rep = target.request(MediaType.APPLICATION_JSON).get();
-Set<Link> links = rep.getLinks(); //links dem Header hinzufügen
+Set<Link> links = rep.getLinks(); 
+//bzw.
+Response rep = target.ok(book.get()).links(self, delete).build(); //links dem Header hinzufügen
 ```
 #### 7 - HATEOAS to the resource
 * in domain 
@@ -403,19 +422,26 @@ public class LinkRessource{
 
     public LinkRessource(){}
 }
-
+```
+```java
+@XmlRootElement
 public class Hypermedia(){
     private List<LinkRessource> links = new ArrayList();
+
+    //getter + setters
+
 
     public void addLink(LinkRessource linkRessource){
         this.links.add(linkRessource);
     }
     // auch getLinks(), setLinks, deleteLinks()
 }
+```
 
+```java
 //alle Entititys (Book, Author) sollen extend Hypermedia
 
-//BookRessource dann
+// BookRessource dann ergänzen mit ->
 
 @Content
 private UriInfo uriInfo;
@@ -424,39 +450,87 @@ private UriInfo uriInfo;
 @Produces(MediaType.APPLICATIN_JSON)
 @Path("{isbn: \\d{9}[\\d|X]$}")
 publc Response getBookByIsbn(final @PathParam("isbn") Stirng isbn){
-    Optional<Book> book bookRepository.getByISBN(isbn);
+    Optional<Book> book bookRepository.getByISBN(isbn); //Optinal<> -> ?????
     if (book.isPresent(){
         //links erstellen
         Link self = Link.fromUri(uriInfo.getBaseUriBilder()
             .path(getClass())
             .path(getClass(), "getBookByIsbn") //getBooByIsbn = Funktionsname
             .build(book.get().getId()))
-                .rel("self")
-                .type("GET")
-                .build();
+        .rel("self")
+        .type("GET")
+        .build();
         Link delete = Link.fromUri(uriInfo.getBaseUriBilder()
             .path(getClass())
             .path(getClass(), "deleteBook") //getBooByIsbn = Funktionsname
             .build(book.get().getId()))
-                .rel("delete")
-                .type("DELETE")
-                .build();
+        .rel("delete")
+        .type("DELETE")
+        .build();
+
         LinkRessource selfLink = new LinkRessource(self);
         LinkRessource deleteLink = new LinkRessource(delete);
         book.get().addLink(selfLink);
-        book.get().addLink(deleteLink);
+        book.get().addLink(deleteLink); //Links zu Ressource
 
-        return Response.ok(book.get()).links(self, delete).build());
+        return Response.ok(book.get()).links(self, delete).build(); // Links zu Header
     })
     //return Response.noContent().build();
     throw new ISBNExceptionFoundException();
 }
 ```
+* hier wurde MAVEN-Plugin: **cargo** zum Containesieren benutzt
 #### 8 - Challenge/Solution: Add exception handlers
 
 ### 5 - Bean Validation API
 #### 1 - Bean Validation introduction
+* für Data Intaktheit/Unversehrheit/Integrität
+* wird von internem Mechanismus der API getriggert
+    * `public Response saveBook(@Valid final Book book)` - `@Valid` sagt, es sollen die Regeln beachet werden
+    * `public void createUser(@NotNull String name)` 
+    * <- wenn nicht erfüllt => Exception
+    * Liste der Valid-Annotationen, die beachtet werden sollen
+        + `@AssertTrue` - 
+        * `@Future` - 
+        * `@NotNull` - 
+        * `@Max(100)`
+        * `@Pattern`
+        * `@Size`
+        * man kann auch eigene erstellen
+        * weiter unter javax.validation.constraints
 #### 2 - Work with Bean Validation
++ am Bsp von Book -> **Book.java**
+```java
+//code
+public class Book extends Hypermedia implements Serializable {
+
+    // code
+    @Size(min=10, max=10)
+    private String id; //id muss 10 sein
+    @Size(min=5)
+    private String title; 
+    @Size(min = 1)
+    private ArrayList<Author> authors; //Array muss min. 1 Eintrag haben <- Typ darf kein Interface sein
+    @DecimalMin("0.00")
+    private Float price;
+    @NotNull
+    private String imageFileName
+    @Pattern(regexp = "hier steht regExp")
+    private String link // muss dann dieser refExp entsprechen
+    @Past
+    private Date published
+}
+```
+* dann z.B wenn man Book speichern will => z.B in **BookRessource.java**
+```java
+//code
+public Response saveBook(@Valid final Book book){
+    Book persistentBook = bookRespository.saveBook( book);
+    return Response.status(Response.Status.ok).entity(persistedBook).build();
+}
+///code
+```
+
 #### 3 - Manage validation failures
 #### 4 - Implement validation failure management
 #### 5 - Challenge/Solution: Add validation annotations

@@ -9,20 +9,22 @@
 * angluar cli lernen
     + <- gibt es alles auf Lynda
 #### 4 - Basics of TypeScript
-* ist in TypoScript geschrieben
+* Angular ist in TypoScript geschrieben
     * TypoScript:
         * ES2015 classen
         * Module
         * Typisierung der Variablen
+        * Funktionssignaturen
     * in TypoScript kann man auch JS schreiben
 * TypoScript to Know:
     * Klassen schreiben
     * Angular Decoratoren
     * Parameter Type Annotationen
+* man kann auch nur JS ES2015 schreiben
 * Bsp TypoScript:
 ```javascript
 import {Component} from 'angular2/core';
-import {FromBuilder} from 'angular2/core'; //Imports
+import {FromBuilder} from 'angular2/core'; //Imports = Module laden
 
 @Component({ //TypeScript-Dekorator
     selector: 'media-tracker-app'
@@ -30,8 +32,8 @@ import {FromBuilder} from 'angular2/core'; //Imports
     styleUrls: ['./app.compoments.css']
 })
 
-export class AppComponent { //Klass-Def - Klass-Syntax ist ES2015; export - Klass zum Modul umwandlen
-    constructor(fromBuilder: FromBuilder) {} //Konsturktor ist ES2015-syntax; in () - Angular-Typisierung
+export class AppComponent { //Klass-Def - Klass-Syntax ist ES2015; export (TS) - Klasse zum Modul umwandlen
+    constructor(fromBuilder: FromBuilder) {} //Konsturktor ist ES2015-syntax; in () - TS-Typisierung
 }
 ```
 #### 5 - Course overview
@@ -39,11 +41,12 @@ export class AppComponent { //Klass-Def - Klass-Syntax ist ES2015; export - Klas
 ### 1 - Architecure Overview
 #### 1 - Components, Bootstrap and the DOM
 * Angular wird aus Componenten gebildet (Baum-Struktur ähnlich dem DOM-Baum). Starte ist **Bootstraping-Component**
-* Angular startet mit Bootstrap-Call -> dann schauet es nach ob es weitere Compoenent gibt
+* Angular startet mit Bootstrap-Call -> dann schauet es nach ob es weitere Componenten gibt und lädt diese in den Baum 
 * Componenten rendert Teil von HTML und zugehörige Funktionen zu diesem Teil. In diesem Component-Klasse ist die Logik des Components
     * Component kann z.B *mediaItem* haben und *onDeleteClick*. 
 * Mit Componenten kann man HTML-Templates erstellen
     * in HTML selbst wird Template-Syntax benutzt.
+* Compoente wird anstelle des HTML-Elements gerendert
 #### 2 - Directives and pipes
 * Componente = Direktive mit Template. Direktiven enthalten Funktionalität und DOM-Tranformationen
 * Direktiven können sein:

@@ -1,0 +1,31 @@
+FROM node
+
+RUN apt update && \
+    apt -y dist-upgrade
+
+RUN apt-get -y install apt-transport-https ca-certificates
+
+#yarn installieren
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && \
+    apt install -y yarn
+
+#install angular
+RUN npm install -g @angular/cli && \
+    echo "Die Version von Nest ist -> $(ng --version)"
+
+#install synp
+RUN npm install -g synp
+
+RUN apt autoremove -y
+
+COPY ./entrypoint.sh /scripts/entrypoint.sh
+
+VOLUME [ "/app" ]
+
+EXPOSE 4200
+
+ENTRYPOINT [ "/scripts/entrypoint.sh" ]
+
+CMD [ "ng", "serve", "--open", "--host", "0.0.0.0" ] 
