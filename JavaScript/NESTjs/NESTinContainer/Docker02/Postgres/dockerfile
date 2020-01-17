@@ -8,3 +8,4 @@ COPY ./createDB.sql /docker-entrypoint-initdb.d/createDB.sql
 #RUN /bin/bash -c /docker-entrypoint-initdb.d/createDB.sql
 
 VOLUME [ "/var/lib/postgresql" ]
+VOLUME [ "/etc/postgres" ]
