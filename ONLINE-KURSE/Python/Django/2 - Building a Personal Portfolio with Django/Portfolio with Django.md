@@ -1,3 +1,37 @@
+als Editor Atom
+* `django-admin startproject portfolio`
+* Root-Folder umbenenen => `portfolio` zu portfolio-project
+* `python manage.py runserver`
+* `
+### 2 Creating Django App
+#### 1 - Start a new project in Djang
+als Editor Atom
+* `django-admin startproject portfolio`
+* Root-Folder umbenenen => `portfolio` zu `portfolio-project`
+* `python manage.py runserver`
+#### 2 - Creating a Django app in a project
+* `ajango-admin startapp jobs` - man sollte für Apps Plural benutzen
+* in settings.py `INSTALLED_APPS`-Array ergänzen
+#### 3 - Setting up URL in your Django project
+* urls.py
+```python
+import jobs.views 
+
+urlpatterns = [
+    # ...
+    path('lala', jobs.views.lala, name="lala"),
+]
+```
+* views.py
+```python
+from django.shortcuts import render
+
+def lala(request):
+    return render(request, 'lala.html', )
+```
+* jobs/templates
+    * jobs/templates/jobs
+        * jobs/templates/jobs/lala.html erstellen
 ### 3 - Django and Databases
 #### 1 - Creating the models in DjangoTemplates
 * DB um Jobs zu speichern

@@ -12,7 +12,7 @@ services:
       - "3000:3000"
       - "9229:9229"
     volumes:
-      - ./code:/app
+      - ./codeYoutube:/app
     depends_on: 
       - postgres-db
     networks: 
@@ -20,23 +20,23 @@ services:
         ipv4_address: 10.100.120.10
     command: [ "nest", "start", "--debug", "10.100.120.10:9229", "--watch" ] 
 
-  angular-server:
-    build: 
-      context: ./Docker02/Angular/.
-      dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker02/Angular/Dockerfile"
-    image: nestjs_lernen/angular-server2
-    hostname: angular-server2
-    container_name: angular-server2
-    restart: on-failure
-    ports:
-      - "4200:4200"
-    volumes:
-      - .//code:/app
-    depends_on: 
-      - nestjs-server
-    networks: 
-      nestjs_network:
-        ipv4_address: 10.100.120.20
+  # angular-server:
+  #   build: 
+  #     context: ./Docker02/Angular/.
+  #     dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/NESTjs/NESTinContainer/Docker02/Angular/Dockerfile"
+  #   image: nestjs_lernen/angular-server2
+  #   hostname: angular-server2
+  #   container_name: angular-server2
+  #   restart: on-failure
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - ./codeYoutube:/app
+  #   depends_on: 
+  #     - nestjs-server
+  #   networks: 
+  #     nestjs_network:
+  #       ipv4_address: 10.100.120.20
     #command: [ /bin/bash ]
 
   postgres-db:
