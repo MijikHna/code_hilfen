@@ -12,7 +12,7 @@ services:
       - "3000:3000"
       - "9229:9229"
     volumes:
-      - ./codeYoutube:/app
+      - ./codeYoutube1:/app
     depends_on: 
       - postgres-db
     networks: 

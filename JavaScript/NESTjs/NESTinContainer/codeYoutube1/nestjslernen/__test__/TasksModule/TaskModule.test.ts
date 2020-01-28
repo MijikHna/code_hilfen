@@ -36,7 +36,8 @@ describe("TaskService", () => {
             expect(tasksRepo.getTasks).not.toHaveBeenCalled();
 
             const filters: GetTasksFilterDto = { status: TaskStatus.IN_PROGRESS, search: "Some search query" };
-            const result = await tasksService.getTasks(filters, mockUser);
+            //const result = await tasksService.getTasks(filters, mockUser);
+            const result = await tasksService.getAllTasks(filters, mockUser);
             expect(tasksRepo.getTasks).toHaveBeenCalled();
             expect(result).toEqual("someValue");
         })
