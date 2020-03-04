@@ -812,22 +812,331 @@ namespace DataAccess{
 * <- JS wird aber erst Code produzieren, wenn man im Namespace Definitionen sind, die Code brachen z.B `enum` (`interface` => kein Code)
 + mit `export` den Typen exportieren = nach Außen bekannt machen + im andren Namespace mit `import` bekannt machen, da sonst nur über ganzen Namen erreichbar sind
 #### 3 - Using namespaces to encapsulate private members
-#### 4 - Understanding the difference between internal and external modules
-#### 5 - Switching from internal to external modules
-#### 6 - Importing modules using CommonJS syntax
-#### 7 - Importing modules using ECMAScript 2015 syntax
-#### 8 - Loading external Modules
+* JS-Design-Pattern: Immediatly Invoked Function Expression (IFE). Es einkapselt Code, der ausgeführt wird und dann entscheidet, welcher Teil des Code exportiert wird, durch return
+```ts
+function lala(){
 
+}() // mit () am Ende wird Funktion direkt ausgeführt
+
+(function lala(){
+
+})() 
+
+//Bsp eigne jQ-Funktion
+var jQuery = {
+    vesion: 1.19,
+    fn: {}
+};
+
+(function defineTypes($){ //dabei wird in der Funktion die Var jQuery $ heißen
+    if ($.version < 1.15)
+        throw 'Plugin requires version 1.15+'
+
+    $.fn.myPlugin = function(){
+        //my plugin code
+    }
+})(jQuery) //wenn die Funktion direkt ausgeführt wird, wir ihr die Var. jQuery übergeben
+```
+* <- diese () sind IFE-s
+* NS sind eigentlich nur spezielle Funktionen
+* man kann in NS private Variablen und Funktionen erstellen, die nur in NS zugänglich sind.
+#### 4 - Understanding the difference between internal and external modules
+* = externer Modul Approach
+* Interne Module und NS gruppieren Obj und schließen sie aus globalem NS aus
+* External Modul - benutzt Datei als Scope. Per Defualt werden die Obj nur in der Datei zugänglich, => müssen exortiert werden bzw. importiert von anderen Modulen
+* es gibt zwei Schlüsselwörter für Imports in TS = sind komplett gleich
+    1. requier (Node.js)
+    2. ECMAScript15 -> sollte benutzt werden
+#### 5 - Switching from internal to external modules
+* ! NS = internal Modul
+* Damit man external Modul-Konzept nutzen kann, muss man:
+    1. in tsconfig.json sollte man sagen, dass man external Module benutzt: `"module": "system"` (hier kann man eigentlich beliebies mache z.B "es2015")
+#### 6 - Importing modules using CommonJS syntax
+* = requier-Syntax
+```ts
+import Model = require('./model') // alles was in Datei ./model ist kann man jetzt über Model ansprechen ! keine Endung
+
+//Ansprecehn
+//1
+Model.ToDo;
+//2
+import ToDo = Model.Todo;
+
+//...
+```
+#### 7 - Importing modules using ECMAScript 2015 syntax
+```ts
+import * as Model from './model' // alles was in ./model ist in Object Model laden
+
+import { ToDo, TodoState as ToDoStatus } form './model'
+
+import './jQuery' // es wird nichts aus dem Modul importiert. Eventuell braucht man keine Klassen des Modul aber den Import 
+
+//import ToDo = Model.Todo
+
+let todo: Model.Todo;
+```
+#### 8 - Loading external Modules
+* Momentan kein Standard Modul Loader standartisiert
+* es gibt verschiede -> hier wird `System.js` benutzt (deswegen `system` in tsconfig)
+* mit dem Modul Loader braucht man nicht in .html jede einzelne .js linken. Man muss nur den Loader linken und der Loader lädt dann benötigten Dateien/Module
+```html
+<!--
+...
+<body>
+-->
+<script type="text/javascript" src="../system.js"></script>
+<script>
+    System.defaultJSExtensions = true;
+    System.import('app') //so dann alle Module laden; app = Applicaton-Modul
+</script>
+<!--
+</body> 
+-->
+```
+* eventuell mit npm `systemjs` installieren
 ### 8- Real-World Application Dev
 #### 1 - Introducing the sample JS app
+* Hier sollte man sich Exercise Dateien anschauen. Die App besteht aus:
+    1. index.html - html mit bootstrap
+    2. TodoService.js/ts - Klassen für ToDos
+    3. ToDoListComponent.js/ts - Rendert ToDos mit jQuery zu HTML
+    4. TodoApp.js - verwaltet alle Instanzen der App
 #### 2 - Converting existing JS code to TS
+1. einfach tsconfig.json erstellen:
+```json
+{
+    "compilerOptions": {
+        "target": "es5"
+    }
+}
+```
+2. `tsc -w` TS-Kompiler starten
+3. Datei zu .ts umbennen und alles in TS-From umschreiben
 #### 3 - Generating declaration files
+* = wie man JS-Bibs benutzen kann die keine TS-Typisierung haben
+* hier jQuery-Bib
+* `declare var $: any` - am Anfang der Datei. nur für TS-Linter
+* man kann TS-Deklaration-Datien benutzen. Sagt, dass es eine Lib gibt, die nicht in TS geschrieben wurde: man muss es nicht unbedigt selbst erstellen. In `tsconfig.json` - bei `compilerOptions` einfügen `"declaration": true` und TS kompilieren. Wenn Kompiler durch ist wird ein NAME.d.ts = Deklaration-Datei erstellt
 #### 4 - Referencing third-pary libraries
+* mit Tool `tsd`:
+    1. `npm install -g tsd` - inzwischen wurde es durch `types` erstet
+    2. `tsd query jquery` - Fragen, ob es für jQuery Deklartion-Files gibt
+    3. `tsd install jquery` - TS-Deklarations installieren
+    4. `tsd install jquery --save` - Referenz für die heruntergeladene Version der TS-Deklaration speichern. es wirs `tsd.json` erstellt
+        1. dann `tsd install` laufen lassen
 #### 5 - Converting to external modules
+* in `tsconfig.json` unter compilerOptionen `module": "system"` als Modul-Option setzen. Dann alle Typen importieren/exportieren
+* eventuell muss für jQurey import machen. Imports kann man auch als url angeben z.B hier `import code://.../jquery.js
+* Man kann beim exportiren, festlegen, dass ein Modul-Member default export ist mit `export default NAME...` => dann beim import `import NAME, {weitere, member} from lala;` defualt Member  muss aber als erster stehen.
+* jetzt braucht man nur den TS-Loader in HTML zu laden = `system.js` und 
+```html
+<script type="text/javascript">
+    System.deaultJSExtension = true;
+
+    System.import("TodoApp").then(function(module){ //System.import return Module als Promis .then(...) = die App dann aufrufen
+        new module.TodoApp(document, [
+            "test 1",
+            "test 2",
+            "test 3",
+        ]);
+    });
+
+</script>
+```
 #### 6 - Debugging TS with source maps
+* Debugign mit Hilfe von Source Maps (ist Browser Feature)
+* Source Maps = Compiler sagt dem Browser, wo der Fehler passiert ist im der originaler Datei
+* in tsconfig.conf
+    * unter compilerOptions
+        * `"sourceMap": true` setzen => es wird xxx.js.map erstellt die das Mapping enthält
+* Browser wird Fehler in TS anzeigen
+* SourceMap macht einen MetaEintrag (als Kommentar) in xx.js
 
 ### 9 - Decorators
 ### 1 - Implementing method decorators
+* ist ES5-Syntax
+* Decorator = um Code-Wiederholung zu verlinger + more Readable + more Maintainable
+* Bsp: Methode in andre Methode wrappen = Decorator-Pattern
+```ts
+var originalMethod = TodoService.prototype.add;
+TodoService.prototype.add = function(...args) {
+    //zusätzliche Logik 1
+    console.log(`add(${JSON.stringify(args)})`);
+
+    //alte Funktion aufrufen
+    let returnValue = originalMethod.apply(this, args);
+
+    //zusätzliche Logik 2
+    console.log(`add(${JSON.stringify(args)}) => ${returnValue}`);
+    return returnValue;
+}
+```
+* ES5-Decoratoren anwenden
+```ts
+@DecoratroMethodName
+zuDecorirendeMethode(){
+
+}
+```
+* Decorator = Funktion mit bestimmte Signatur
+* Decoratoren können auf Klassen, Methoden, Attribute und Parameter angewendet
+* Bsp Methode-Decorator
+```ts
+function log(target: Object, methodName: string, descriptor: TypedPropertyDesciptor<Function>){ //Signatur für Method-Decorator
+// target = Objekt, wo die Methode lebt (z.B in Instanz einer Klasse)
+// methodeName = Name der Methode, die decoriert wird
+// descriptor = Object mit Metadaten für Methode die man decorieren will, die verändert werden
+    var orignalMethod = descriptor.value; // .value = Methode selbst also KlassenName.prototype.methodenName
+
+    descriptor.value = function(...args){
+       //zusätzliche Logik 1
+        console.log(`${methodeName}(${JSON.stringify(args)})`);
+
+        //alte Funktion aufrufen
+        let returnValue = originalMethod.apply(this, args);
+
+        //zusätzliche Logik 2
+        console.log(`${methodeName}(${JSON.stringify(args)}) => ${returnValue}`);
+        return returnValue;
+    }
+}
+
+@log
+add(input: ToDo){
+    
+}
+```
+* damit man eigene Decoratoren schreiben kann muss man in tsconfig.json `"experimentalDecorators": true` setzen
 ### 2 - Implementing class decorators
+* Validators.ts erstellen
+```ts
+import { Todo, TodoState } from './Model';
+
+//Klasse die decoriert wird
+@validatable
+export class ValidatableTodo implements Todo{
+    id: number;
+    name: string;
+    state: TodoState;
+}
+
+export interface ValidateableTodo extends IValidatable{
+
+}
+
+export interface IValidatable{
+    validate(): IValidationResult;
+}
+
+export interface IValidationResult{
+    isValid: boolean;
+    message: string;
+    property?: string;
+}
+
+export interface IValidator{
+    (instance: Object): IValidationResult;
+}
+
+
+//Class-Decorator
+export function validate(): IValidationResult[]{
+    let validators = [].concat(this._validations), //Array von Validatoren bekommen, kann auch leer bzw. null sein (also this._validators); concat() kann damit umgehen
+        errors = [];
+
+    for (let validator of validators){
+        let result = validator(this),
+
+        if (!result.isValid){
+            errors.push(result);
+        }
+    }
+
+    return errors;
+}
+//Variante 1 - ALT
+//ValidatableTodo.prototype.validate = validate;
+
+//Variante 2: NEW -> jetzt kann man diesen Decorator für alle Klassen anwenden
+export function validatable(target: Function){
+    target.prototype.validate = validate;
+}
+```
+* Class-Decorator => Methode zu Klassen hinzufügen
+* !! am Ende wurde noch die todo-Klassen verändert => eventuell Exercise Files anschauen
+
 ### 3 - Implementing property decorators
+```ts
+export class ValidatableTodo implements Todo{
+    id: number;
+    @required
+    name: string;
+    state: TodoState;
+}
+
+
+//Signatur Property-Decorator
+export function required(target: Object, propertName: string){
+
+    let validatable = <{ _validatiors: IValidator[]}>target,
+        validators = (validatable._validators || (validatable._validators = []));
+
+    validators.push(function (instance){
+        let propertyValue = instance[propertyName],
+            isValid = propertyValue != undefined;
+
+        if (typeof propertyValue === 'string' ){
+            isValid = propertyValue && propertyValue.length > 0;
+        }
+
+        return {
+            isValid,
+            message: '${propertyName} is required`,
+            property: propertyName
+        }
+    });
+}
+```
+* = wird ausgeführt für Propety
 ### 4 - Implementing decorator factories
+* Decorator Factory = Pattern
+* = an Decorator einen Param geben
+* Idee: Factory-Function ist Funktion, die eine Funtion returnt
+```ts
+
+export class ValidatableTodo implements Todo{
+    id: number;
+    @required
+    @regex(`^[a-zA-Z]*$`)
+    name: string;
+    state: TodoState;
+}
+
+//Syntax 
+// innere Function kann auf Variablen der außeren Funktion zugreifen
+export function regex(pattern: string){
+
+    let expression = new RegExp(pattern);
+
+    return function regex(target: Object, propertyName: string){
+         let validatable = <{ _validatiors: IValidator[]}>target,
+        validators = (validatable._validators || (validatable._validators = []));
+
+        validators.push(function (instance){
+            let propertyValue = instance[propertyName],
+                isValid = expression.test(propertyValue);
+
+            return {
+                isValid,
+                message: `${propertyName} does not match ${expression}`,
+                property: propertyName
+            }
+        });
+    };
+}
+```
+### Next Steps:
+* Seiten:
+    1. typescriptlang.org
+    2. github.com/Microsoft/TypeScript 

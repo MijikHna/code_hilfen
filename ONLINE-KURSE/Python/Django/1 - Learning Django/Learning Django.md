@@ -357,31 +357,81 @@ wird dann immer groß
 #### 2 - Implement Django Templates
 * templates home.thml
 ```html
-Home 
+<div>
+    {% for pet in pets %} <!-- FOR-LOOP -->
+        <div class="petname">
+            <a href="{% url 'pet_detail' pet.id %}">
+                <h3>{{ pet.name|capfirst }}</h3>
+            </a>
+            <p>{{ pet.spcies }}</p>
+            {% if pet.breed %}
+                <p>Breed: {{ pet.breed }}</p>
+            {% endif %}
+            <p class="hidden">{{ pet.description }}</p>
+        </div>
+    {% endfor %}
+</div>
 ```
 * tempate per_detail.html
 ```html
-Pet detail
+<div>
+    <!--Hier keine Schleife -->
+    <h3>{{ pet.name|capfirst }}</h3>
+    <p>{{ pet.spcies }}</p>
+    {% if pet.breed %}
+        <p>Breed: {{ pet.breed }}</p>
+    {% endif %}
+    {% if pet.age %}
+        <p>Age: {{ pet.age }}</p>
+    {% endif %}
+    {% if pet.sex %}
+        <p>Sex: {{ pet.sex }}</p>
+    {% endif %}
+
+    {% if pet.vaccinations.all %}
+        <p>Vaccination for:</p>
+        <ul>
+            {% for vaccination in pet.vaccinations.all %}
+                <li>{{ vaccatination.name }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <p>Submitted by: {{ vaccination.submitter }}</p>
+    <p>Submitted on: {{vaccination.date|date:"M d Y" }} </p> <!-- hier wird an |date Parameter übergeben -> Syntax: PIPE:"PARAM"
+    <p>{{ pet.description }}
+</div>
 ```
 #### 3 - Structure Templates
 * *base.html* erstellen und andere Templates von diesem Erben lassen
+* hier war schon Footer und Header schon erstellt => einfach ins BASE.html reinkopieren und ...
+```html BASE.html
+{% block content %}
 
+{% endblock %}
+```
++ in den weiteren hmtl-Dateien als erste Zeile einfüegen: 
+```html
+{% extends "base.html" %}
+{% block content %}
+<!-- HTML-CODE -->
+{% endblock %}
+```
 #### 4 - Integrate CSS and JavaScript
 * statische Dateien = CSS und JS zuerst über *ProjectName/ProjectName/settings.py* einstellen:
-```python
+```python settings.py
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")  #BASE_DIR ist oben in settings.py definiert (meist ist ProjectName/ProjectName); join() ist die python-Funktion um Pfade zu bauen
-]
+] # wo Dajngo nach static-Dateien schauen soll
 ```
 * dann in *base.html* als erste Zeile einfügen:
-`{% load static %}`
+`{% load static %}`; eventuell in weiteren Templates nach `{% extends "base.html" %}`
 * jetzt kann man in hrefs, links usw. die Dateien die in static-Ordner den HTML-Tags vergeben mit:
-`"{% static "style.css" %}"`
+`href/src="{% static "style.css" %}"`
 
 ### Weitere Tipps:
 * Tipps zu Lernen:
 * Pythoen, SQL, Rest
 * Django-Doku + Django-Tutorial checken:
 * Tipps welche Django-Settings sollte man ändern:
-* DEBUG:
+* DEBUG zu False setzen für Prod in settigns.py:
     * `DATABASES: <- PostgreSQL, MySQL`
