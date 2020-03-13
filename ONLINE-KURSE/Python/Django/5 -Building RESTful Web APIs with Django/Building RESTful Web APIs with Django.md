@@ -674,7 +674,7 @@ class ProductListTestCase(APITestCase):
         self.assertIsNone(respose.data['next'])
         self.assertIsNone(response.data['previous'])
         self.assertEqual(response.data['count'], product_count)
-        self.asertEqual(len(resonse.data['result']), product_count)
+        self.assertEqual(len(response.data['result']), product_count)
 ```
 #### 4 - Unit test for an UpdateAPIView subclass
 * tests.py
