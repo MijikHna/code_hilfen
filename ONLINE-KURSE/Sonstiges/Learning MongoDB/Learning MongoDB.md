@@ -72,12 +72,136 @@
 * zu `find`
     * `db.users.find({"phone": {"type":"fax","number":"555-555"}}, {"phone":1})` - bei *phone* nach *type* * fax* und *number* suchen und nur *phone* ausgeben/returnen
     * db.users.find({},{"phone":1});
-#### 3 - Embed or refernce?
+#### 3 - Embed vs. refernce?
+* DB und Tabellen sind eigentlich json-Dateien => diese Datei anordnen als
+    1. Embedded Data = eine große Datei
+        1. einfacher
+        2. weniger Code-operationen
+        3. einfacher anzufragen und zu indexen
+    2.  Reference Data = getrennte Dateien
+        1. mehr Operationen zum Einfügen und Accessen
+        2. 
+* Bsp: Wiki-DB
+    1. Tabellen-Felder:
+        1. Pages
+        2. Authors
+        3. Tags
+        4. Comments
+    * Lösung Embedded:
+        1. Tabelle:
+        ```json
+        {
+            "Type": "blog",
+            "Title": "My blog post",
+            "Author": "Kirsten Hunter",
+            "Tags": ["great", "awesome" ],
+            "Commetns": ["i love this post" ]        
+        }
+        ```
+        2. Queries.
+        ```ts
+        db.pages.find({"Author": "Kirsten"})
+        db.pages.find({"Tags": "greate"})
+        db.pages.insert({
+            "Type": "blog",
+            "Title": "My blog post",
+            "Author": "Kirsten Hunter",
+            "Tags": ["great", "awesome" ],
+            "Commetns": ["i love this post" ]  
+        })
+        ```
+        3. wenn man z.B weitere Daten für bestimmte Felds ändern möchte z.B 
+        ```json
+        {
+            "Type": "blog",
+            "Title": "My blog post",
+            "Author": {
+                "name": "Kirsten Hunter",
+                "twitter": "@lala"
+            }
+            "Tags": ["great", "awesome" ],
+            "Commetns": [{
+                "content": "i love this post",
+                "user": "Fred Flint"
+            }]    
+        }
+        ```
+        4. => man 
+        ```ts
+        db.user.find({"Comments.user": "Fred Flint})
+        //Ausgabe
+        {
+            "_id": ObjectID("8850adf"),
+            "Type": "blog",
+            "Title": "My blog post",
+            "Author": {
+                "name": "Kirsten Hunter",
+                "twitter": "@alal"
+            },
+            "Tags": ["great", "awesome"],
+            "Comments": [{
+                "user": "Fred Flint",
+                "content": "I Love this post"
+            }]
+        }
+        ```
+    * Lösung: References d.h z.B Comments speichern Referenzen auf Comments-Dokument
+        1. Query-Bsp: Comments mit bestimmten User finden ("name")
+        ```ts
+        db.comments.find({
+            "name": "Fred Flint",
+            "page_id": true
+        })
+
+        var pageIds = comments.map(function(c){
+            return c.post_id; 
+        })
+
+        db.pages.find({_id: {$in: pageIds}}, {title: true});
+        ```
 #### 4 - Performance
+* Mongo - Features:
+    1. Indexing = Index für Tabellen aufbauen
+        1. 64 Indizes pro Collection
+        2. Single Field - Index  - einfach zu setten und ist schnell
+        3. Compound Index = Index gegen mehrere Felder
+        4. Unique - gegen Dublikate
+    2. Sharding = Daten auf mehrere Machine verteilen => jeder Rechner sucht in seinen Dokumenten/Objekten
+    3. Replications - automatic Failover
 
 ### 2 - Explore the System
 #### 1 - Explore the Mongo shell
+* `mongod`  - Server starten
+* `mongo` - Mongo-Shell öffnen
+    * `db` - verbundene db anzeigen
+    * `use lala-db` - zu `lala-db` switchen, wenn nicht existiert, wird troztdem verbudnen. DB wird erstellt, sobald man erstes Obj erstellt
+    * `db.cars.insert({"make": "Subaru"})` - in DB `lala-db` Tabelle `cars` erstellen und ersten Eintrag machen
+    * `show dbs`
+    * `show collections` - Tabellen anzeigen
+    * `print("test")` - man kann JS-Befehle nutzen
+    * `var arr=["one", "two", "three"]` - man kann Variablen setzen
+    * `for (i=0; i<10000; i++){ db.nubmers.insert("nummber": i)}` - 10000 Eintraäge in Tabelle numbers machen
+    * `db.numbers.count` - alle Einträge in Tabelle/Collection anzeigen
+    * `db.numbers.find({"number": 1})`
+    * `db.numbers.find({"number": 1}).explain()` - wie Query zusammengestzt wrde
+    * `db.numbers.find({"number": 1}).explain(executionStats)`
+    * ``db.numbers.createIndex({number:1})` - Index erstellen für **numbers**
+    * `db.numbers.find({"number": 1}).explain(executionStats)`
+
 #### 2 - Import the data into the database
+* Daten, die in json, csv sind infügen
+* `mongoimport --help`
+    * namespace
+        * `-c` - Collection/TabellenNamen vergeben
+    * input options
+        * `-f FileNAME`
+* Bsp json-Datei
+    * `mongoimport --db learning_monog --collection tours --jsonArray --file tours.json`
+    * `mongo`
+    * `use learning_mongo`
+    * `show collections`
+    * `db.tours.count()`
+    * `db.tours.find("tourTags": "hiking")`
 #### 3 - Mongo shell operations
 #### 4 - Simple indexing
 

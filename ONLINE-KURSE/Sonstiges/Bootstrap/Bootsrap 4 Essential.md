@@ -44,7 +44,7 @@ Repo mit Exersices: github.com/planetoftheweb/bootstrap4
 #### 3 - Typographic utilities
 * Utitily-Klassen
     * Horizontales Alignments:
-        * `text-justify`
+        * `text-justify` - ganzen Text in einer zeile
         * `text-XX-POS`
             * XX: sm>576px, md>768px, lg>992px, xl>1200px
             * POS: left, center, right
@@ -68,10 +68,10 @@ Repo mit Exersices: github.com/planetoftheweb/bootstrap4
 #### 4 - Blockquotes and lists
 * Klassen für Listen und Quotes:
 * Lists:
-    * `list-unstyled` - keine Bullets
+    * `list-unstyled` - keine Bullets; Nur bei `<ul>`
     * Inline Lists:
-        * `list-inline` - in `<ul>`
-        * `list-inline-item` - in `<li>`
+        * `list-inline `- in `<ul>`
+            * `list-inline-item` - in `<li>`
 * Mehrere Cusror in VSCode unter Selection schauen.
 * Blockquote:
     * `blockquote`
@@ -101,8 +101,8 @@ Repo mit Exersices: github.com/planetoftheweb/bootstrap4
 #### 7 - CSS variables
 * Bootstrap hat ein paar vordefiniert CSS-Variablen
 * CSS-Variablen sind neu, eventuell, können es nicht alle Browser unterstützen
-* `var(NameDerVer)`
-* `:root` - damit CSS-Variable redefinieren bzw. eigene definiren:
+* `var(NameDerVer)` - Zugriff
+* `:root { ... }` - damit CSS-Variable redefinieren bzw. eigene definiren:
 * Bootstrap vordefinierte Variablen:
     * Farbe/Kontextuelle Varialen:
         * --blue, --indigo, --purple, --pink, --red usw.
@@ -140,7 +140,7 @@ Repo mit Exersices: github.com/planetoftheweb/bootstrap4
     * `container` - um Kontent zu zentrieren + responsive
     * `container-fluid` - haben vollen Viewport
     * Container haben immer 15px padding
-* ?? `clearfix`
+* ?? `clearfix` - floats clearen
 * Bsp:
 ```html
 <div class="row">

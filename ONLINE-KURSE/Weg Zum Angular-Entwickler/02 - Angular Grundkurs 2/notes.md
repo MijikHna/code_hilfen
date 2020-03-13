@@ -179,33 +179,138 @@
 * in `tsling.json` ändern, damit es Linter auch weiß
 * man kann auch mit mehreren Präfixen arbeiten. In `tslint.json` Präfixe als Array erstellen.
 
-## BIS HIERHIN
-
 ### 6 - Standardwerte anpassen
 #### 1 - Erstellung-Standards
+* man kann mit Optionen bei CLI sagen, wie Sachen erstellt werden oder in angular.json global einstellen in `@schematics` (API-Doku auf Github anschauen: für Module, Service, Directiven, Pipes usw.)
+* Schematics kann man Project-spezifisch oder für Workspace in eignem `{}` statu `project` einstellen
 #### 2 - Angualar-Standards
+* Standardwerte sind in `node_modules/@schematics/...` => hier stehen eigentlich nur mögliche Werte (Definition) im eigener `angualar.json` dann die richtigen Werte einstehen
+* Komponenten nicht im eignen Order => `component` -> `flat` auf `true`.
 #### 3 - Veröffentlichungseinstellungen
+* projects - PROJNAME
+    * optionen
+        * baseHref = ... -> in index.html bei `<base href="">` wird diese Wert eingesetzt
+        + verbose = true -> detailiertere Ausgabe -> eventuell bei build ist wichtig
+        + deleteOutputPath = false -> wird so gut wie nie benutzt
+        + progress: false -> Progress-Anzeige deaktivieren
+        * aot: true
+        + showCircularDependencies: false -> Warnmeldung circular dependencies ausmachen
 #### 4 - Entwicklungseinstellungen
+* `ng server` - startet virtuellen Server und auf diesem Server wird kompiliertes Objekt angezeigt
+    * `serve` kann man auch einstellen
+        * options
+            + port: 4444
+            + progres: true
+            + aut: true
+            + host: 0.0.0.0 -> starndard: host: localhost
+            + ssl: true - SSL simulieren
+            + sslKey: ssl/server.key
+            + sslCert: ssl/server.key 
+                * <- man kann hier auch eigene Pfade mit SSL-Keys einstellen
+            + open: true -> nach Kompilieren auch Stand der Kompilierung gestartet wird
+            + proxyConfig: -> ProxyServer einstellen
 #### 5 - CLI-Einstellungen
+* neuen Block in angular.json definieren
+```json
+"cli": {
+    "packageManager": "npm",
+    "warnings": { //warnings definieren
+        "versionMissmatch": true,  //bei Versions-Missmatch informieren wenn globale CLI älter als lokale CLI
+        "typeScriptMissmatch": true
+    }
+}
+```
  
 ### 7 - Externe Bib einbinden
 #### 1 - ES6-Bib einbinden (CryptoJS)
+* Scripte als Module importieren
+* Schritte:
+    1. `npm install crypto-js --save` - ist nicht TS => TypeDefinition auch installieren
+    2. `npm install @types/crypto-js --save-dev`
+    3. in `tsconfig.app.json`
+        `"types": [ .., "crypto-js" ]` - damit TypeConfiguraion aktiviert wird
+    4. Test:
+    ```ts
+    import * as CtyptoJS from 'crypto-js',
+
+    const hash = CryptoJS.MD5 ("hello world").toString();
+    console.log(hash);
+    ```
 #### 2 - Bib "Material Design" einbinden
+* Material Design - CSS von Google (Android basiert auf Material)
+* Ab Angular 6:
+    1. `ng add @angular/material` - npm installiert alles notwendige und ng stellt alles ein
+    2. über git kann man dann die Veränderungen ansehen
 
 ### 8 - Eigene Umgebungsvariablen
 #### 1 - Environment um Eigneschaften erweitern
+* in environments.xxx.ts
+```ts
+//..
+endpoint: {
+    url: 'http://localhost/api'
+}
+```
+* `ng server --configuraion production` - so verschiedene envrinments aufrufen
 #### 2 - Eigenes Environment einbinden
+* environemnt.staging.ts erstellen
+* da endpoint anpassen
+* in anguler.json dann in `configurations` noch `staging` einfügen
+    * fileReplacement verwenden
+* in angular.json dann in `server` noch `staging` einfügen
+    * browserTarger einstellen
+* dann `ng server --configuraion stagin` 
 
 ### 9 - Dateien erstellen
 #### 1 - Generate
+* mit `ng` Bestandteil erstellen
+* `ng generate component/directive/pipe/service/USW NAME`
+* `ng generate applicaton` - ganze App ertellen
+* `ng generate library`
+* `ng generate universal` - Univeral-App damit die APP auf node-Server gerender wird
+* `ng generate class NAME`
+* `ng generate class NAME --project PROJNAME` - ansonsten in defaultProject (steht in angular.json)
 #### 2 - Class
+* `ng generate class NAME` -> wird in /src/app erstllen bzw statt app PREFIX
+* `ng generate class ordner/NAME` 
+* `ng generate clsss NAME --spec true` - direkt Test-Datei anlegen bzw. `ng generate class NAME --spec`
+* dabei werden in angular.json festgelegte Konventionen beachtet z.B Camel-Namen für  
 #### 3 - Interface
+* man kann kein `--spec` verwenden
+* `ng generate interface NAME`
+* `ng generate interface ordner/NAME`
+* `ng generate interface NAME --force` - überschreiben erzwingen
+* `ng generate interface NAME --prefix LALA`
 #### 4 - Enum
+* `ng generate enum NAME [--dry-run]`
+* `ng generate enum PFAD/NAME`
+```ts
+export enum User{
+    Admin, //0
+    SuperUser, //1
+    User //2
+    SuperUser1 = 111,
+    SuperUser2 //112
+}
+
+// Strings as Werte
+export enum UserType{
+    admin = "Admin",
+    client = "Client"
+}
+```
 
 ### 10 - Angular-Bestandteile erzeugen
 #### 1 - Module
-#### 2 - Optionale Parameter für Module
+* `ng genrate modul NAME`
+* `ng generate m NAME --routing` - Modul soll auch Routing-Funktionalität benutzen
+* `ng generate m NAME --spec false` 
+#### 2 - Optionale Parameter für Module`
+* `ng generate m NAME --module MODULNAME` - in welches Modul dieses Modul eingefügt werden soll
+* `ng generate m NAME --flat` - wird direkt im Ordner angelegt, wo man gerade ist. d.h. kein eigenes Modul erzeugt wird
 #### 3 - Components
+* `ng generate m NAME --module MODULNAME(app)`
+* `ng generate m component MODULNAME/NAME` - Componente des Modules erstellen
 #### 4 - Optionale Parameter für Module
 #### 5 - Directives
 #### 6 - Optionale Parameter für Directives
@@ -214,6 +319,8 @@
 #### 9 - Guards
 #### 10 - Projekt
 #### 11 - Bibliotheken
+
+## BIS HIERHIN
 
 ### 11 - Angular-Apps veröffentlichen
 #### 1 - build

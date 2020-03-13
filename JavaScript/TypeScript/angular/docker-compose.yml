@@ -1,0 +1,16 @@
+version: "3.7"
+
+services: 
+   angular-node:
+        build: 
+            context: .
+            dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/TypeScript/angular/dockerfile"
+        image: angular-node
+        hostname: angular-node
+        container_name: angular-node
+        restart: on-failure
+        ports:
+            - "9229:9229"
+            - "4200:4200"
+        volumes:
+            - ./code:/srv

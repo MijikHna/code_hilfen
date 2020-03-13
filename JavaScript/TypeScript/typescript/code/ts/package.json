@@ -1,0 +1,12 @@
+{
+    "name": "ts",
+    "version": "0.0.1",
+    "description": "",
+    "author": "Kirill",
+    "scripts": {
+        "start": "node system.js",
+        "build": "tsc",
+        "test": "echo \"Error: no tests installed\" && exit 1"
+    },
+    "dependencies": {}
+}

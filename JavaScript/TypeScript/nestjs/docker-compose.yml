@@ -1,0 +1,16 @@
+version: "3"
+
+services: 
+    nestjs-node:
+        build: 
+            context: .
+            dockerfile: "/media/kirill/WindowsD/Programmieren/ProgramierHilfen/JavaScript/TypeScript/nestjs/dockerfile"
+        image: nestjs-node
+        hostname: nestjs-node
+        container_name: nestjs-node
+        restart: on-failure
+        ports:
+            - "9229:9229"
+            - "3000:3000"
+        volumes:
+            - ./code:/srv
