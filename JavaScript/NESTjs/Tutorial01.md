@@ -38,7 +38,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   "type": "postgres", //aus pg npm-Modulen
   "host": "localhost",
   "port": 5432,
-  "username": "robinboehm",
+  "username": "lala",
   "password": "",
   "database": "angular-de-nestjs-tutorial",
   "entities": ["src/**/*.entity{.ts,.js}"],

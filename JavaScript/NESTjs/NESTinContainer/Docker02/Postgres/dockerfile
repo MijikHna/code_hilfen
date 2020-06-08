@@ -1,7 +1,7 @@
 FROM postgres
 
 RUN apt update && \
-    apt dist-upgrade
+    apt dist-upgrade -y
 
 COPY ./createDB.sql /docker-entrypoint-initdb.d/createDB.sql
 

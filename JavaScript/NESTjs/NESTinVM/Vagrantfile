@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "debian10_basic"
   #config.vm.name = "NestJS-VM"
-  config.vm.hostname = "nestjs-vm-02"
+  config.vm.hostname = "nestjs-vm"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
     vb.gui = false
-    vb.name = "nestjs-vm-02"
+    vb.name = "nestjs-vm"
   #
   #   # Customize the amount of memory on the VM:
     vb.memory = "3072"

@@ -37,11 +37,17 @@ def lala(request):
 * DB um Jobs zu speichern
 * Model = Klasse, die in DB gepeichert wird:
     * in */portfolio-project/models.py* erstellen <- kann man mehrer Classen erstellen.
+    ```py
+    class Job(models.Model):
+        image = models.ImageField(upload_to='images/') # Image; image-Attribute vom Typ models.ImageField(); upload_to = wo Images gespeichert werden sollen
+        summary = models.CharField(max_length=200) # Summary für Descrition
+    ```
+* wenn man ImageField verwendet braucht Python Lib `Pillow`
 
 #### 2-Postgres setup for Django:
 * per Default steht in *setttings.py* welche DB genutzt wird
 * Postgres:
-    1. installieren
+    1. installieren (auf Mac gibt es eine User-Freundliche postgres.app)
     2. `sudo su - postgres` - sich als user postgres anmelden
     3. `psql` - sich mit DB verbinden
     4. `\conninfo` - Verbindungsinfo anzeigen
@@ -55,28 +61,38 @@ def lala(request):
 ```python
 'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'portfoliodb',
-    'USER': 'postgres',
+    'NAME': 'portfoliodb', # Name der DB
+    'USER': 'postgres', 
     'PASSWORD': 'postgres',
     'HOST': 'localhost',
     'PORT': '5432',
 }
 ```
 * damit Django sich mit Postgres verbinden kann braucht er psycopg2-binary =>:
-    * `pip3 install psycopg2-binary`
+    * `pip3 install psycopg2-binary` oder `pip3 install psycopg2`
 
 #### 4-Make Django migrations and migrate:
 * Migrationen = Wege um DB für Django-Projekte zu setzen
-    * `python3 manage.py makemigrations` - Ausführen, wenn man Änderungen im Model macht.
+    * `python3 manage.py makemigrations` - Ausführen, wenn man Änderungen im Model macht = Es wird Migration erstellt, wenn etwas geändert wurde = wird eine Datei in `/migrations/xxx_initial.py` mit Befehlen, was auf DB angewendet werden soll
     * `python3 manage.py migrate` - die Migrationen ausführen
-
+* Migrationen = Models zu Tabellen in DB schreiben.
+* Alle Apps ( = `INSTALLED_APPS`), die DB brauchen haben Models, die dann in DB geschrieben werden sollen.
 #### 5-Setting up an admin panel in Django:
 Um sich in localhost\admin anmelden zu können => zuerste admin-user erstellen
+* Admin-APP ist in:
+    1. INSTALLED_APP
+    2. Url ist in `urls.py` 
 * `python3 manage.py createsuperuser`
 * `admin -> django1234`
+* man kann dann über localhost/admin an der DB arbeiten:
+    1. auch User und Gruppen, da ja eigentlich auch Models der admin-APP
+    2. damit die Admin-APP auch eigene Models verwalten kann:
+        1. in `admin.py` einfügen: 
+            1. `from .models import Jobs` - `.` für gucke in diesem Verzeichnis
+            2. `admin.site.register(Jobs)` - dieses Model bei Admin-App/Seite registrieren
 
 #### 6-Creating model objects via the admin panel in Django:
-* der Admin der APPP (nicht des Projects) verwaltet das Model =>admin.py öffnen und
+* der Admin der APP (nicht des Projects) verwaltet die Models =>admin.py öffnen und
     * `form .models import Jobs` - Klasse Jobs aus models.py einbinden
     * `admin.site.register(Jobs)` - den Admin über die Jobs-Klasse wissen lassen
 
