@@ -44,7 +44,7 @@ conditionalOperatorsTask2 = () => {
     }
 }
 
-// 15 - Funktion Expressions
+// 16 - Funktion Expressions
 // Function Declarations
 function funcSum1(a, b) {
     console.log("funcSum1: " + (a + b));
@@ -101,4 +101,13 @@ function functionConstructor() {
     } */
     console.log(user);
     console.log(user.toString());
+}
+
+// 15 - Functions Basics
+function defautlParamIsFunct(message, text = anotherFunct(message)) {
+    console.log(`15: Default Param ist Funktion ${message}, ${text}`);
+}
+
+function anotherFunct(message) {
+    return "return aus Funkt als Param " + message;
 }
