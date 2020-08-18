@@ -389,24 +389,229 @@ export class HoverDirective {
 
 ### 2 - Direktiven über CLI anlegen
 
-* 
+* Schritte:
+  1. `ng generate module utils`
+  2. `ng generate directive utils/hover --export` auch Direktive über Modul exportieren
+  3. dieses Modul dann in entsprechenden Modulen importieren
+
+* jetzt kann man die Directive `inHover` als HTML-Attr. benutzen wie z.B `*ngIf`
+
 ### 3 - Elements mit Direktiven erweitern
+
+```ts inHover.directive.ts
+import { Directive, ElementRef, Renderer2 } from '@angular/core';
+
+@Directive ( {
+  selector: '[inHover]'
+} )
+export class HoverDirective {
+
+  // hier in constructor die Dependency Injection (muss Typ haben)
+  constructor ( elem: ElementRef, renderer: Renderer2 ) {
+    console.log ( 'inHover' , elem );
+
+    // Farbe ändern
+    // elem.nativeElement.style.color = 'red'; //Könnte Probleme haben, wenn man die Anwendung nicht im Browser, sondern auf dem Server laufen hat. Server kennt keinen DOM => über Render2 -Klasse-Obj
+    renderer.setStyle( elem.nativeElement , 'color', 'red');
+  }
+}
+```
 
 ### 4 - Direktiven-Werte übermitteln
 
+* = Parameter an Directive übergeben, geschieht über `="XYZ"`
+
+```html app.module.html
+<div>
+  <h1 inHover="green">
+    Welcome to {{ title }}!
+  </h1>
+  <!-- Bsp mit der Bindung (fontColor) ist Variable in app.component.ts-->
+  <h2 [inHover]="fontColor">saban</h2>
+  <h2 inHover="blue">ünlü</h2>
+
+  <in-user></in-user>
+</div>
+```
+
+```ts inHover.directive.ts
+@Directive ( {
+  selector: '[inHover]'
+} )
+export class HoverDirective implements OnInit{
+
+  //1 Variante 1
+  @Input() // um Parameter zu übergeben
+  inHover: string;
+
+  //2 Variante 2
+  get inHover (): string {
+    return this._inHover;
+  }
+  @Input() // um Parameter zu übergeben
+  set inHover ( value: string ) {
+    if ( value.trim() !== '' ) {
+      this._inHover = value;
+      this.renderer.setStyle( this.elem.nativeElement , 'color', this._inHover);
+    }
+  }
+
+
+  private _inHover: string;
+
+  constructor ( private elem: ElementRef, private renderer: Renderer2 ) {
+  }
+
+  // für einen Standard-Wert (red) für _inHover
+  ngOnInit (): void {
+    if ( this._inHover === undefined ) {
+      this.renderer.setStyle( this.elem.nativeElement , 'color', 'red');
+    }
+  }
+}
+```
+
 ### 5 - Direktiven mit HostBindings
 
+```ts inHover.directive.ts
+@Directive ( {
+  selector: '[inHover]'
+} )
+export class HoverDirective implements OnInit {
+
+  get inHover (): string {
+    return this._inHover;
+  }
+
+  @Input ()
+  set inHover ( value: string ) {
+    if ( value.trim () !== '' ) {
+      this._inHover = value;
+    }
+  }
+
+  private _inHover: string;
+
+  // Style-Color des Hosts binden
+  @HostBinding('style.color')
+  color: string|null = null;
+
+  // da man Farbe über HostBinding macht => braucht man keinen Redner2
+  constructor () {  }
+
+  // ermöglicht, dass man auf Host einen Event-Listener registrieren kann. Parameter = Event auf den man Hören sollte
+  @HostListener ( 'mouseenter' )
+  enter () { //enter() = Event-Handler der getriggert wird
+    this.color = this.inHover;
+  }
+
+  @HostListener ( 'mouseleave' )
+  leave () {
+    this.color = null;
+  }
+
+  ngOnInit (): void {
+    if ( this._inHover === undefined ) {
+      this.inHover = 'red';
+    }
+  }
+
+}
+```
+
 ### 6 - Strukturelle Direktiven erstellen
+
+* bestimmte DOM Elemente anzeigen, wenn User Admin oder NormalUser ist
+
+* `ng generate directive role` + in export bei Modul packen
+
+* mit strukturelen Direktive kann man `ngTemplate` bzw. `*` verwenden + dieses Template wird dann in View in Abhängikeit von bestimmten Gegenbenheiten (die die Directive besimmt) eingefügt/entfernt
+
+```ts role.directive.ts
+@Directive ( {
+  selector: '[inRole]'
+} )
+export class RoleDirective {
+  get inRole (): string {
+    return this._inRole;
+  }
+
+  @Input ()
+  set inRole ( value: string ) {
+    this._inRole = value;
+    // die Role setzen + überpfügen
+    const access = this.hasRolePermission( value );
+    // in Abhängikeit von der Role die View de/aktivieren
+    if ( access && ! this._hasView ) {
+      // template init.
+      this.viewContainer.createEmbeddedView( this.templRef );
+      this._hasView = true;
+    } else if ( !access && this._hasView ) {
+      // remove template
+      this.viewContainer.clear();
+      this._hasView = false;
+    }
+  }
+
+  private _hasView = false;
+  private _inRole: string;
+
+  // damit man ngTemplate und * nutzen kann
+  constructor ( private templRef: TemplateRef,
+                private viewContainer: ViewContainerRef ) {
+  }
+
+  // Funktion um die Role zu prüfen
+  hasRolePermission ( role: string ): boolean {
+    return role === environment.role;
+  }
+}
+```
+
+```ts environment.ts
+export const environment = {
+  production: false,
+  role: 'admin' // für role.direktive
+  // role: 'client' // wenn man admin auskommentier und client einkommentiert => wird inRole nicht mehr angezeigt
+};
+```
+
+```html app.compoment.thml: 
+<button *inRole="'admin'">Admin</button>`
+
+<ng-template inRole="admin">
+    <h1>admin version</h1>
+  </ng-template>
+
+```
 
 ## 5 - Grundlagen zu Pipes
 
 ### 1 - Was ist eine Pipe
 
+* dienen dazu Ausgaben zu modifizieren = Ausgabe formatieren
+  * z.B Datum ins richtige Format setzen
+  * Preise (Komma <-> Punkt)
+
 ### 2 - Pipes in HTML anwenden
+
+* Syntax: `Ausdruck | PipeName [:'Paramter']`
+  1. `<h1>{{name | uppercase}}</h1>`
+  2. `<h1>{{createdAt | date :'long'}}</h1>`
+* man kann Pipes auch verschachteln `<h1>{{createdAt | date :'long' | uppercase }}</h1>`
 
 ### 3 - Pipes via JS anwenden
 
-### 6 - Lower-& UpperCasePipe
+1. Pipe-Klasse-Namen herausfinden: `PIPENAMEPipe`
+2. Pipe-Instanz erzeugen + `transform()` aufrufen
+
+```ts
+const reversePipe: ReversePipe = new ReversePipe();
+reversePipe.tranform(123);
+```
+
+### 6 - Hauseigene Pipes nutzen
+
 #### 1 - Lower- & UpperCasePipe
 #### 2 - CurrencyPipe
 #### 3 - Locale
@@ -422,19 +627,151 @@ export class HoverDirective {
 #### 3 - pure
 
 ### 8 - Grundlagen zur Dependency Injection
+
 #### 1 - Dependency Injection in der Angular-Welt
+
+* einer Abhängigkeit geschuldet die Informationen zur Laufzeit injezieren d.h. abhängig von bestimmten Zustand bestimmtes Objekt injezieren
+
+* Schema:
+  1. ModulA
+      1. in `declarations` KomponentA registieren
+      2. in `providers` ServiceA bereitstellen => dadurch kann man Instanzen (andere Component-s, Service-s, Pipe-s, Directiv-en), die von Angular erzeugt werden nicht mehr mit `new` jede Mal neu erzeugen, sondern direkt die erzeugten benutzen (im Angular macht man dan die Injezierung im `constructor()` des Komponent)
+  2. KomponentA
+      1. `constructor(lala: Typ)` - Typ ist wichtig. Angular schauet, ob es schon diese Instanz gibt und gibt diese mit oder erzeugt neue wenn noch nicht erzeugt
+* Rootinjektor der Anwendung = Array/Container mit Info wie Dep Inj ablaufen soll. Dieser RootInjector wird mit Infos aus ModuelXYZ `providers:` gefüllt
+* die Services/Injection werden aber auch über Rootinjektor sonder Injector Bubbling geschieht. Jede Komponente bekommt hat eigenen Injector-Service. Zuerst wird in dem geschaut, dann im Eltern-Injector erst RootInjector gefragt. Oft kann es vorkommen, dass es verschiedene Instanzen verschiedenen Komponenten gegeben werden z.B wenn Eltern-Injector einer Komponente diesen Service hat und andere Komponente bekommt die Injection aus Rootinjector (RootInjector hat alle declarierten + exportieren Klassen).
+
 #### 2 - Vorhanden Services nutzen
 
+* Angular (Haus-)Services:
+  1. in Component/Servcie/Directive auf Injector direkt zugreifen: `Injector` indezieren + über `injector.get(token)` Infor aus Injector bekommen. Also Injector selbst ist injizierbar
+  2. ElementRef - Instanz eigener Directive/Komponente mit `elementRef.nativeElement` auf das DOM-Element der Directive/Componente zugreifen
+  3. Render2 - DOM anpassen: rendere.setStyle `(elementRef.nativeElement, "color", 'red')`
+
 ### 9 - Provider nutzen
+
 #### 1 - Eigene Services bereitstellen
+
+1. Klasse app-model.service.ts erstellen
+
+```ts
+export class AppModelService {
+  startTime = Date.now();
+  counter = 0;
+}
+```
+
+2. als provider bereitstellen in app.module.ts, damit man es in anderen Componenten indizieren kann
+
+```ts
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    UserModule
+  ],
+  providers: [ AppModelService ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+3. in app.component.ts verwenden
+
+```ts
+@Component ( {
+  selector   : 'in-root',
+  templateUrl: './app.component.html',
+  styleUrls  : [ './app.component.scss' ]
+} )
+export class AppComponent {
+
+  title        = 'in';
+  showUserInfo = true;
+
+  class2bind = 'class-name-1 class-name-2 class-name-3';
+
+  // mit 
+  constructor ( public appModel: AppModelService, login: LoginService ) {
+    console.log ( appModel, login );
+  }
+
+  increment () {
+    this.appModel.counter ++;
+  }
+
+}
+```
+
+```ts user.component.ts
+@Component({
+  selector: 'in-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.scss']
+})
+export class UserComponent implements OnInit {
+  // mit public kann man auch in .html zurgreifen, sonst nur in der eigenen .ts
+  constructor( public appModel: AppModelService, login: LoginService ) {
+    console.log ( appModel, login );
+  }
+  ngOnInit() {  }
+}
+```
+
+```html user.compomnent.html
+<h4>{{appModel.startTime | date }}</h4>
+<h4>{{appModel.counter }}</h4>
+<in-user-list></in-user-list>
+```
+
+```html app.component.html
+<button (click)="increment()">increment {{appModel.counter}}</button>
+```
+
+* `@Injectable()` bedeutet eigentlich, dass diese Klasse selbst im `constructor` Injection aufnehmen kann. In `AppModelService` kann man es nicht machen
+
+```ts login.service.ts
+import { Injectable, Injector } from '@angular/core';
+
+@Injectable()
+export class LoginService {
+  constructor( injector: Injector ) {
+    console.log ( injector );
+  }
+
+}
+```
+
+```ts user.module.ts
+@NgModule({
+  imports: [
+    CommonModule
+  ],
+  providers: [ LoginService ],
+  declarations: [UserComponent, UserListComponent, UserNameComponent],
+  exports: [UserComponent]
+})
+export class UserModule { }
+```
+
 #### 2 - Werte bereitstellen
+
 #### 3 - Multi-Option
+
 #### 4 - Klasseninstanz bereitstellen
+
 #### 5 - Bereitstellung "konkatieren"
+
 #### 6 - Bereitstellung über Factory-Methode
+
 #### 7 - Injectable Decorator seit Angular 6
 
 ### 10 - Tipps zur Dependency Injection
+
 #### 1 - Token Injection
+
 #### 2 - Der LOCALE_ID-Token
+
 #### 3 - Host-, Self- und Optional Decorator
