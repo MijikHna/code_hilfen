@@ -576,7 +576,7 @@ export const environment = {
 };
 ```
 
-```html app.compoment.thml: 
+```html app.compoment.thml:
 <button *inRole="'admin'">Admin</button>`
 
 <ng-template inRole="admin">
@@ -613,17 +613,27 @@ reversePipe.tranform(123);
 ### 6 - Hauseigene Pipes nutzen
 
 #### 1 - Lower- & UpperCasePipe
+
 #### 2 - CurrencyPipe
+
 #### 3 - Locale
+
 #### 4 - DecimalPipe
+
 #### 5 - PercentPipe
+
 #### 6 - DatePipe
+
 #### 7 - SlicePipe
+
 #### 8 - JsonPipe
 
 ### 7 - Pipes erstellen und nutzen
+
 #### 1 - Pipe erstellen
+
 #### 2 - ReversePipe via CLI
+
 #### 3 - pure
 
 ### 8 - Grundlagen zur Dependency Injection
@@ -758,19 +768,294 @@ export class UserModule { }
 
 #### 2 - Werte bereitstellen
 
+* Werte die via Dependency Injection bereitgestellt werden können
+
+```ts app.module.ts
+@NgModule ( {
+  declarations: [
+    AppComponent
+  ],
+  imports     : [
+    BrowserModule,
+    UserModule
+  ],
+  providers   : [
+    AppModelService,
+    { provide: 'username', useValue: 'Lala1' }, //Objekt, die Attr. provide hat (besser hier Inject-Token übergeben ABER hier im Bsp: String username = Lala2)
+    { provide: 'users', useValue: 'Lala2' }
+  ],
+  bootstrap   : [ AppComponent ]
+} )
+export class AppModule {
+}
+```
+
+```ts user.compoment.ts
+@Component({
+  selector: 'in-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.scss']
+})
+export class UserComponent implements OnInit {
+  constructor( public appModel: AppModelService,
+               login: LoginService,
+               @Inject('users') users: string, //da kein Eindeutiger Typ (wie bei den Serveses) hier Decorator @Inject(TOKEN). Hier ist Token 'users' und 'username' 
+               @Inject('username') username: string, ) {
+    console.log ( users, username );
+  }
+  ngOnInit() {  }
+}
+```
+
 #### 3 - Multi-Option
+
+```ts app.module.ts
+@NgModule ( {
+  declarations: [
+    AppComponent
+  ],
+  imports     : [
+    BrowserModule,
+    UserModule
+  ],
+  providers   : [
+    AppModelService,
+    { provide: 'username', useValue: 'Lala'},
+    { provide: 'users', useValue: 'Peter', multi: true }, // mit Option multi: true kann man sagen, ob Werte Unique oder List von Werten gespeichert werden soll => Wird zu Array 
+    { provide: 'users', useValue: 'Hans', multi: true },
+    { provide: 'users', useValue: 'Frank', multi: true }
+    // man kann dann weitere users in anderen Modulen anlegen, die dann zu dieser Liste mitangenommen werden
+    // wenn nicht multi wird, wird es überschrieben, falls gleicher provide: NAME irgendwo noch vorkommt
+  ],
+  bootstrap   : [ AppComponent ]
+} )
+export class AppModule {
+}
+```
 
 #### 4 - Klasseninstanz bereitstellen
 
+* ganze Klasse mit Klasse-Provider Klassen-Instanzen in provider-Listen hinzufügen
+
+```ts app.module.ts
+export class UseMe{
+  val = 123;
+}
+
+export class UseMe1 implements IUseMe {
+  val = 123;
+}
+
+export class UseMe2 implements IUseMe {
+  val = 456;
+}
+
+
+@NgModule ( {
+  declarations: [
+    AppComponent
+  ],
+  imports     : [
+    BrowserModule,
+    UserModule
+  ],
+  providers   : [
+    AppModelService,
+    <ClassProvider>{provide: 'useMe', useClass: UseMe, multi: true},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe1[], multi: true},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe1[], multi: true}
+  ],
+  bootstrap   : [ AppComponent ]
+} )
+export class AppModule {
+}
+```
+
+```ts user.component.ts
+@Component ( {
+  selector   : 'in-user',
+  templateUrl: './user.component.html',
+  styleUrls  : [ './user.component.scss' ]
+} )
+export class UserComponent implements OnInit {
+  constructor (
+    public appModel: AppModelService,
+    @Inject ('useMe') useMe: useMe: any,
+    @Inject ('useMe') useMe1: useMe: any
+    login: LoginService
+  ) {
+    console.log ( useMe );
+  }
+
+  ngOnInit () {
+  }
+}
+```
+
+```ts iuse-me-ts
+export interface IUseMe {
+  val: number;
+}
+```
+
 #### 5 - Bereitstellung "konkatieren"
 
+* innerhalb des Provider, einen Wert bereitstellen der aus anderen Werten erstellen => mit existing Provider
+
+```ts 
+@NgModule ( {
+  declarations: [
+    AppComponent
+  ],
+  imports     : [
+    BrowserModule,
+    UserModule
+  ],
+  providers   : [
+    AppModelService,
+    <ValueProvider>{provide: 'user', useValue: 'Lala'}, // 
+    <ClassProvider>{provide: 'useMe', useClass: UseMe, multi: true},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe2, multi: true},
+    <ExistingProvider>{provide: 'useExist', useExisting: 'useMe', multi: true}, // existeirende Werte kann man dann bei useExisting = Ref. auf existierendes Obj
+    <ExistingProvider>{provide: 'useExist', useExisting: 'user', multi: true}
+  ],
+  bootstrap   : [ AppComponent ]
+} )
+export class AppModule {
+}
+```
+
+```ts user.compoment.ts
+@Component ( {
+  selector   : 'in-user',
+  templateUrl: './user.component.html',
+  styleUrls  : [ './user.component.scss' ]
+} )
+export class UserComponent implements OnInit {
+  constructor ( public appModel: AppModelService,
+                @Inject ('useMe') useMe: IUseMe[],
+                //@Inject ('useExist') useExist: 'useMe'
+                @Inject ('useExist') useExist: any[],
+                login: LoginService ) {
+    console.log ( useMe, useExist );
+  }
+
+  ngOnInit () {
+  }
+}
+```
 #### 6 - Bereitstellung über Factory-Methode
 
+```ts app.module.ts
+@NgModule ( {
+  declarations: [
+    AppComponent
+  ],
+  imports     : [
+    BrowserModule,
+    UserModule
+  ],
+  providers   : [
+    AppModelService,
+    <ValueProvider>{provide: 'user', useValue: 'Saban Ünlü'},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe, multi: true},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe2, multi: true},
+    <ExistingProvider>{provide: 'useExist', useExisting: 'useMe', multi: true},
+    <ExistingProvider>{provide: 'useExist', useExisting: 'user', multi: true},
+    // Werte bereitstellen die über Factory-Methode erzeugt wurden
+    <FactoryProvider>{provide: 'mixed', useFactory: () => {
+      return 'Lala';
+    }},  //UseFator erwarten Funktion, die Wert für mixed zurückliefert
+    <FactoryProvider>{provide: 'mixed', deps: ['user'], useFactory: ( usr: string ) => {
+      return `factory return ${usr}`; //hier die Funktion mit Funktionen
+    }},
+  ],
+  bootstrap   : [ AppComponent ]
+} )
+export class AppModule {
+}
+```
+
+```ts user.compoment.ts
+export class UserComponent implements OnInit {
+  constructor ( public appModel: AppModelService,
+                @Inject ('useMe') useMe: IUseMe[],
+                @Inject ('useExist') useExist: any[],
+                @Inject ('mixed') mixed: any[], // hier wird Injeziert
+                login: LoginService ) {
+    console.log ( 'mixed', mixed );
+  }
+
+  ngOnInit () {
+  }
+}
+```
+
 #### 7 - Injectable Decorator seit Angular 6
+
+* `@Injectable()` hat auch weiter Bedeutung: man kann als Param. Konfig-Obj angeben, der sagt, in welchem Modul oder Injector bereitgestellt werden soll `@Injectable(provideIn: 'root')`, `@Injectable(provideIn: UserModule)` - landet im Root-Injector. Vorteil: falls dieser Service nirgendwo benutz wird, wird er weg optimiert. Man kann auch darin `useValue` benutzen
+  * Alles was in `providers:` ist landet in Root-Injector
 
 ### 10 - Tipps zur Dependency Injection
 
 #### 1 - Token Injection
+
+* Token ist eine Const, die man projekt-weit benutzen kann
+
+```ts user-token.ts
+import { InjectionToken } from '@angular/core';
+
+// Token erzeugen
+export const USER_TOKEN: InjectionToken<string> = new InjectionToken<string> ( 'userToken ' );
+```
+
+```ts app.module.ts
+@NgModule ( {
+  declarations: [
+    AppComponent
+  ],
+  imports     : [
+    BrowserModule,
+    UserModule
+  ],
+  providers   : [
+    AppModelService,
+    <ValueProvider>{provide: USER_TOKEN, useValue: 'Saban Ünlü'},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe, multi: true},
+    <ClassProvider>{provide: 'useMe', useClass: UseMe2, multi: true},
+    <ExistingProvider>{provide: 'useExist', useExisting: 'useMe', multi: true},
+    <ExistingProvider>{provide: 'useExist', useExisting: USER_TOKEN, multi: true},
+    <FactoryProvider>{provide: 'mixed', deps: [USER_TOKEN], useFactory: ( usr: string ) => {
+      return `factory return ${usr}`;
+      }},
+    {provide: LOCALE_ID, useValue: 'de'}
+  ],
+  bootstrap   : [ AppComponent ]
+} )
+export class AppModule {
+}
+```
+
+```ts user.compoment.ts
+@Component ( {
+  selector   : 'in-user',
+  templateUrl: './user.component.html',
+  styleUrls  : [ './user.component.scss' ]
+} )
+export class UserComponent implements OnInit {
+  constructor ( public appModel: AppModelService,
+                @Inject ('useMe') useMe: IUseMe[],
+                @Inject ('useExist') useExist: any[],
+                @Inject ('mixed') mixed: any[],
+                @Inject ( USER_TOKEN ) user: string,
+                login: LoginService ) {
+    console.log ( 'user', user);
+  }
+
+  ngOnInit () {
+  }
+}
+```
 
 #### 2 - Der LOCALE_ID-Token
 

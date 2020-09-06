@@ -1,0 +1,8 @@
+{
+    "sport": "basketball",
+    "coach": "Joe Smith",
+    "wins": 15,
+    "losses": 5,
+    "_comment1": "Mei Kommentar",
+    "__comment2__": "Mein Kommentar"
+}

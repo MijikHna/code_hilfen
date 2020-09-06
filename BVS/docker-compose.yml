@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  bvs-nebsy:
+    build: 
+      context:  ./Dockerfiles
+      dockerfile: /media/kirill/WindowsD/STUDIUM 2/아저씨/Nacharbeitung/BVS/Dockerfiles/Dockerfile
+
+    image: studium/bvs-nebsy
+    hostname: nebsy
+    container_name: bvs-nebsy
+    restart: on-failure
+    networks: 
+      studiumnetwork:
+        ipv4_address: 10.100.0.10
+    volumes:
+      - ./code:/srv/code/
+
+networks:
+  studiumnetwork:
+    name: studiumnetwork
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.100.0.0/24"
+        #- subnet: "2001:3984:3989::/64"

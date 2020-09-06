@@ -1,0 +1,36 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="./script.js"></script>
+
+    <title>Document</title>
+</head>
+
+<body>
+    <div id='ausgabe'>
+
+    </div>
+    <script>
+        chipherText = encrypt('test-message', 'test-key');
+        console.log(chipherText);
+        ausgabe = document.getElementById('ausgabe');
+        ausgabe.innerHTML = '<p style="background-color=green>chipherText</p>';
+
+        const message = "Hi Bob, here is a confidential message!";
+        const key = "password";
+
+        const cipher = encrypt(message, key);
+        console.log("Encrypted message:", cipher);
+        // Encrypted message: Pq(Jwj4(pmzm(q{(i(kwvnqlmv|qit(um{            {iom)
+
+        const decryptedMessage = decrypt(cipher, key);
+        console.log("Decrypted message:", decryptedMessage);
+        // Decrypted message: Hi Bob, here is a confidential message!
+    </script>
+
+</body>
+
+</html>
