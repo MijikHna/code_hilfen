@@ -1,29 +1,38 @@
-### 0 - Introduction
-#### 1 - Create a REST API with Django and Django REST framework
+# Building RESTful Web APIs with Django
+
+## 0 - Introduction
+
+### 1 - Create a REST API with Django and Django REST framework
+
 * Python (Python Buch: https.//learnpyhtonthehardway.org/python3/)
 * Django
-    * Models
-    * Views
-    + Templates
-    + URL config
+  * Models
+  * Views
+  * Templates
+  * URL config
 * Bsp: eCommerce
 * Libs:
-    * Django
-    * Django REST Framework
-    * Django-Filter
-    * Mock - Mocks für Unit Tests
-    * Pillow - Image Editing
+  * Django
+  * Django REST Framework
+  * Django-Filter
+  * Mock - Mocks für Unit Tests
+  * Pillow - Image Editing
 Project wird in virtenv betrieben
 
-### 2 - Installation:
+### 2 - Installation
+
 1. `pip install djangorestframework markdown django-filter`
 2. Project uns APP erstellen
 3. eventuell in `settings.py` -> bei `INSTALLED_APPS` `rest_framework` einfügen, damit man die REST-API auch im Browser nutzen kann, sonst kann man REST-API mit **curl** oder **Postman**
-### 1 - Serializin, Listing, Filtering and Paginating Models
-#### 1 - Creating a Django REST Framework serializer to serialize a model
+
+## 1 - Serializin, Listing, Filtering and Paginating Models
+
+### 1 - Creating a Django REST Framework serializer to serialize a model
+
 * Serializaition bedeutet einen Obj zu JSON, YAML, XML convertieren
-    * Bsp hier: Product-Model zu JSON serialisieren und durch REST API anbieten
+  * Bsp hier: Product-Model zu JSON serialisieren und durch REST API anbieten
 * `to_representation()` - Adden oder Removen Daten von Serializer
+
 ```python
 #./store/serializers.py
 from rest_framework import serializers
@@ -41,22 +50,26 @@ class ProductSerializer(serializer.ModelSerializer):
             data['current_price'] = instance.current_price()
             return data
 ```
-+ <- Implementierung testen:
-    * `./manage.py shell`
-    * `from store.models import Product`
-    * `product = Product.objects.all()[0]`
-    * `form store.serializers import Product`
-    * `data = serializer.to_representation(product)`
-    * `from rest_framework.renders import JSONRenderer`
-    * `renderer = JSONRender()`
-    * `renderer.render(data)` - Daten serializeren => Return ist JSON-Obj
-#### 2 - Creating a ListAPIView subclass
+
+* <- Implementierung testen:
+  * `./manage.py shell`
+  * `from store.models import Product`
+  * `product = Product.objects.all()[0]`
+  * `form store.serializers import Product`
+  * `data = serializer.to_representation(product)`
+  * `from rest_framework.renders import JSONRenderer`
+  * `renderer = JSONRender()`
+  * `renderer.render(data)` - Daten serializeren => Return ist JSON-Obj
+
+### 2 - Creating a ListAPIView subclass
+
 * List API View erstellen
 * Django REST Framework hat mehrere generische API views:
     1. ListAPIView
     2. CreateAPIView
     3. DestroyAPIView
     4. RetrieveUpdateDestroyAPIView
+
 ```python
 # ./store/api_views.py
 from rest_framework.generics import ListAPIView
@@ -68,20 +81,27 @@ class ProductList(ListAPIView):
     queryset = Product.objects.all()
     serializers_class = ProductSerialier
 ```
+
 * render wird schon von `ListAPIView` übernommen. Also hier nur angeben was soll gerendert werden (`Product.object.all()`) und welcher Serializer wird verwendet (`ProductSerializer`)
 * sehr selten wird man eigne APIView bilden wollen z.B wenn man viele Funktionen von mitgelieferten Views nicht braucht (dafür **base APIView*** benutzen)
-#### 3 - Connecting an APIView to route
+
+### 3 - Connecting an APIView to route
+
 * Django REST Framework hat Compatibitilt mit Django Views, deswegen wurden Django REST Framework Views  gleich wie Methode as_view() implementiert
 * /demo/urls.py mit folgenem path ergänzen
+
 ```python
 # ./demo/urls.py
 import store.api_views
 
 path('api/v1/products/', store.api_views.Product.as_view()),
 ```
-#### 4 - Filter back ends with URL query parameters
+
+### 4 - Filter back ends with URL query parameters
+
 * = Product nach ID und on_sale filtern
 * `filter_fields`-Fels von Serializer added entsprechende Felder zu URI und Filtert dann QuerySet nach diesen GET-Parametern
+
 ```python
 # ./store/api_views.py
 from rest_framework.generics import ListAPIView
@@ -112,9 +132,12 @@ class ProductList(ListAPIView):
             )
         return queryset
 ```
-#### 5 - Enabling full-text search filter back end
+
+### 5 - Enabling full-text search filter back end
+
 * = durch Productnamen und Product-Description suchen
 * dafür wird SearchFilter von Django REST Framework benutzt
+
 ```python
 # ./store/api_views.py
 from rest_framework.generics import ListAPIView
@@ -147,16 +170,20 @@ class ProductList(ListAPIView):
             )
         return queryset
 ```
+
 * SearchFilter kann suchen
     1. Partial Match (Default)
     2. Exact Match => `=SUCHEXPR`
     3. Regular Expression => `$[Ee]ar$`
-#### 6 - Enabling pagination of querysets in API responses
+
+### 6 - Enabling pagination of querysets in API responses
+
 * wenn zu viele Results geliefert werder kann man sie paginaten
 * 3 Möglichkeiten um Results zu pagen
     1. PageNumber - URI hat PagenNumber
     2. Limit Offset - URI hat Limit (wie viele Results auf der Seite (`/?limit=xx`)) und Offset (welche Seite (/?limit=2&offset=1))
     3. Cursor - DB-Cursor um zu Paginaten
+
 ```python
 # ./store/api_views.py
 from rest_framework.generics import ListAPIView
@@ -197,10 +224,15 @@ class ProductList(ListAPIView):
             )
         return queryset
 ```
+
 * für Große Mengen an Daten sollte man Cursor Pagination benutzen
-### 2 - Create, Retrieve, Update and Delelte(CRUD) Operations for Models
-#### 1 - Creating a CreateAPIView subclass
+
+## 2 - Create, Retrieve, Update and Delelte(CRUD) Operations for Models
+
+### 1 - Creating a CreateAPIView subclass
+
 * durch API neue Produkt erstellen, dafür CreateAPIView erstellen
+
 ```python
 # ./store/api_views.py
 # ...
@@ -222,21 +254,28 @@ class ProductCreate(CreateAPIView):
             raise ValicationError({ 'price': "A vaid Number is required" })
         return super().create(request, *args, **kwargs)
 ```
+
 * <- so kann man Datan aus Excel, XML, JSON, anderen DBs erstellen und durch REST API ans BackEnd senden
-#### 2 - Connecting a CreateAPIView to the router
+
+### 2 - Connecting a CreateAPIView to the router
+
 * URL in `urls.py` für CreateView erstellen
+
 ```python
 # ./store/api_views.py
 # ...
  path('api/v1/products/new', store.api_views.ProductCreate.as_view())
 # ...
 ```
-* dann eventuell mit Postman oder curl testen + dann Postman bzw. Curl-Scripts unter Developern teilen
-    * `curl -X POST http://localhost:8000/api/v1/products/new -d price=1.00 -d name="My Prodccut" -d description "Hello World"` 
-    * es wird auch ein Formular in Django angezeigt, wo man neues Prod eingeben kann 
 
-#### 3 - Creating a DestroyAPIView subclass
-+ Product aus DB löschen mit DestroyView
+* dann eventuell mit Postman oder curl testen + dann Postman bzw. Curl-Scripts unter Developern teilen
+  * `curl -X POST http://localhost:8000/api/v1/products/new -d price=1.00 -d name="My Prodccut" -d description "Hello World"`
+  * es wird auch ein Formular in Django angezeigt, wo man neues Prod eingeben kann
+
+### 3 - Creating a DestroyAPIView subclass
+
+* Product aus DB löschen mit DestroyView
+
 ```python
 # ./store/api_views.py
 # ...
@@ -247,7 +286,7 @@ from rest_framework.generics import DeleteAPIView
 class ProductDestroy(DestroyAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id' # welches Field durchsucht werden muss um zu löschende Obj zu löschen.
- 
+
     def delete(self, request, *args, **kwargs): # überschreiben der delte-Methode
         product_id = request.data.get('id')
         response = super().delete(request, *args, **kwargs)
@@ -257,22 +296,29 @@ class ProductDestroy(DestroyAPIView):
             cache.delete('product_data_{}'.format(product_id))
         return response
 ```
-#### 4 - Connecting a DestroyAPIView to the router
+
+### 4 - Connecting a DestroyAPIView to the router
+
 * URL in `urls.py` für CreateView erstellen
+
 ```python
 # ./store/api_views.py
 # ...
  path('api/v1/products/<int:id>/delete', store.api_views.ProductDelete.as_view())
 # ...
 ```
+
 * man kann über URI oder curl löschen:
-    * `curl -X DELETE http://localhost:8000/api/v1/products/5/delete` 
-#### 5 - Creating an UpdateAPIView subclass
+  * `curl -X DELETE http://localhost:8000/api/v1/products/5/delete`
+
+### 5 - Creating an UpdateAPIView subclass
+
 * Also
     1. DELETE => DestroyAPIView
     2. GET => RetrieveAPIView
     3. PUT/PATCH => UpdateAPIView
 ODER `RetrieveUpdataDestroyAPIView` benutzen. Vorteile:
+
 1. Code und Config kann man dann reusen
 2. eine URL für alles, die verschiedene HTTP-Methoden hat
 
@@ -284,7 +330,7 @@ class ProductRetrieveUpdateDestroy(RetrieveUpdataDestroyAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
     serializer_class = ProductSerializer
-    
+
      def delete(self, request, *args, **kwargs): # überschreiben der delte-Methode
         product_id = request.data.get('id')
         response = super().delete(request, *args, **kwargs)
@@ -299,7 +345,7 @@ class ProductRetrieveUpdateDestroy(RetrieveUpdataDestroyAPIView):
          if response.status_code == 204:
             # Eventuell muss man alle Daten zum Cache von Django adden, die mit diesem Produkt zusammenhängen
             from django.core.cache import cache
-            product = response.data 
+            product = response.data
             cache.set('product_data_{}'.format(product['id']), {
                 'name': product['name'],
                 'description': product['description'],
@@ -307,18 +353,26 @@ class ProductRetrieveUpdateDestroy(RetrieveUpdataDestroyAPIView):
             })
         return response
 ```
-#### 6 - Connecting an UpdateAPIView to the router
+
+### 6 - Connecting an UpdateAPIView to the router
+
 * URL in `urls.py` für CreateView erstellen (eventuell destroy-URL löschen)
+
 ```python
 # ./store/api_views.py
 # ...
  path('api/v1/products/<int:id>/, store.api_views.ProductDelete.as_view())
 # ...
 ```
-+ wieder mit postman oder curl testen
-### 3 - Managing Serializer Fields, Relations and Validation
-#### 1 - Serializer with only selected fields
+
+* wieder mit postman oder curl testen
+
+## 3 - Managing Serializer Fields, Relations and Validation
+
+### 1 - Serializer with only selected fields
+
 * in serializers.py
+
 ```python
 #...
 class ProductSerializer(serializers.ModelSerializer):
@@ -339,12 +393,15 @@ class ProductSerializer(serializers.ModelSerializer):
             'current_price',
         )
 ```
+
 * `read_only` - sagt, ob der Serializer in das Feld schrieben kann oder nicht
 * Weiter Optionen für Serializer-Fields:
     1. `product_name=serializers.CharField(source='name')`; = sagt, wo(im welchem Feld) sollen die Daten im Serializer übernommen werden => wenn man z.B Field überschreiben möchte
 
-#### 2 - Serializer that shows model relationships
+### 2 - Serializer that shows model relationships
+
 * in **serializers.py**
+
 ```python
 #...
 
@@ -380,6 +437,7 @@ class ProductSerializer(serializers.ModelSerializer):
             items = ShoppingCartItem.objects.filter(product=instance)
             return CartItemSerializer(item, many=True).data
 ```
+
 * `SerializerMethodField` ruft per Default `get_PREFIX_OF_THE_FIELDNAME`-Methode
 * `many=True` = erstellt Liste von serialisierten Model-Instanzen; `many=False` ist Default, erstell nur eine Model-Instanze
 * Tests:
@@ -395,8 +453,10 @@ class ProductSerializer(serializers.ModelSerializer):
     10. `serializer = ProductSerializer(product)`
     11. `print(json.dump(serializer.data, indent=2))`
 
-#### 3 - Number fields with serializers
-* in `serializers.py` 
+### 3 - Number fields with serializers
+
+* in `serializers.py`
+
 ```python
 #...
 
@@ -436,13 +496,16 @@ class ProductSerializer(serializers.ModelSerializer):
             items = ShoppingCartItem.objects.filter(product=instance)
             return CartItemSerializer(item, many=True).data
 ```
-#### 4 - Date and time fields with serializers
+
+### 4 - Date and time fields with serializers
+
 * man wird hier `serializers.DateTimeField()` benutzen:
     1. `input_formats` - Input-Format für Datum
     2. `format` - ist Output-Format
     3. `help_text` = erscheint im Browser für REST API
     4. `style` - Style, wie es im Field im Browser erscheint
 * in `serialisers.py`
+
 ```python
 #...
 
@@ -497,9 +560,13 @@ class ProductSerializer(serializers.ModelSerializer):
             items = ShoppingCartItem.objects.filter(product=instance)
             return CartItemSerializer(item, many=True).data
 ```
+
 * `input_formats` kann Format sein das Python String zu Time konvertieren kann; Default ist ISO-8601
-#### 5 - Lists, dicts, and JSON objects
+
+### 5 - Lists, dicts, and JSON objects
+
 * in `serializers.py` neuen Serializer erstellen, der aber kein Model hat
+
 ```python
 #....
 class ProductStatusSerialisers(serializers.Serializer):
@@ -509,7 +576,9 @@ class ProductStatusSerialisers(serializers.Serializer):
         )
     )
 ```
+
 * in `api_views.py` `GenericAPIView` erstellen, d.h. komplett eigene View erstellen, da ja kein Model
+
 ```python
 #...
 from rest_framework import GenericAPIView
@@ -532,14 +601,19 @@ class ProductStats(GenericAPIView):
         })
         return Response(serializer.data)
 ```
+
 * in **urls.py** Path dafür einfügen
+
 ```python
 #...
 path('api/v1/product/<int:id>/stats', store.api_views.ProductStats.as_view())
 #...
 ```
-#### 6 - Serializer with ImageField and FileField
+
+### 6 - Serializer with ImageField and FileField
+
 * in **serializers.py**
+
 ```python
 # ...
 
@@ -592,10 +666,15 @@ class ProductSerializer(serializers.ModelSerializer):
                 ).decode()
             return instance
 ```
+
 * es gibt auch `write_only=True` => wird nicht in API-Response gespiechert und nicht im Model-Obj gespeichert
+
 * `validated_data` - Daten, die schon von Serializer und Model-Validater bearbeitet wurden. Es wird benutzt, um Model zu erstellen oder upzudaten.
-### 4 - Testing API Views
-#### 1 - Test case for a CreateAPIView subclass
+
+## 4 - Testing API Views
+
+### 1 - Test case for a CreateAPIView subclass
+
 * Hat vier Typen, um API-Views zu testen:
     1. `APISimpleTestCase`
     2. `APITransasctionTestCase`
@@ -603,6 +682,7 @@ class ProductSerializer(serializers.ModelSerializer):
     4. `APITestCase`
 * alle diese Test-Klassen implementieren Django's Interface `TestCase`; Unterschied ist dass die HTTP-RestClient statd Djago-Client benutzen um zu testen
 * man muus JSON-Format benutzen, wenn man API-Klient-Reqeust testen möchten: `self.client.post(url, data, format='json')`
+
 ```py tests.py
 form rest_framework.test import APITestCase # statt Djangos-Tests API-Tests importieren
 
@@ -631,21 +711,25 @@ class ProductCreateTestCase(APITestCase):
             response.data(['current_price'], float (product_atts['price']))
         ) #Werte dei vom Backend gesetzt werden checken
 ```
-* Test laufen: `/manage.py test`
-    * hier wird Fehler kommen => `serializer.py` korriegeren
-    ```py
-    #...
-    class ProductSerialzer():
-        #...
-        sale_start = serializers.DateTime(required=False, '''..''')
-        sale_end = serializers.DateTime(required=False, '''..''')
 
-        #create überschreiben, damit warranty beim Erstellen des Obj. nicht mitbezogen wird
-        def create(self, validated_data):
-            validated_data.pop('warranty')
-            return Product.objects.create(**validated_data)
-    ```
-#### 2 - Test case for a DestroyAPIView subclass
+* Test laufen: `/manage.py test`
+  * hier wird Fehler kommen => `serializer.py` korriegeren
+
+  ```py
+  #...
+  class ProductSerialzer():
+      #...
+      sale_start = serializers.DateTime(required=False, '''..''')
+      sale_end = serializers.DateTime(required=False, '''..''')
+  
+      #create überschreiben, damit warranty beim Erstellen des Obj. nicht mitbezogen wird
+      def create(self, validated_data):
+          validated_data.pop('warranty')
+          return Product.objects.create(**validated_data)
+  ```
+
+### 2 - Test case for a DestroyAPIView subclass
+
 ```py tests.py
 #...
 class ProductDestroyTestCase(APITestCase):
@@ -662,9 +746,13 @@ class ProductDestroyTestCase(APITestCase):
             Product.objects.get, id=product_id
         )
 ```
+
 * Man muss noch checken, ob Cache und weitere Daten, die mit Obj zusammenhängen auch gelöscht wurden
-#### 3 - Test case for a ListAPIView subclass
+
+### 3 - Test case for a ListAPIView subclass
+
 * tests.py
+
 ```py
 #...
 class ProductListTestCase(APITestCase):
@@ -676,8 +764,11 @@ class ProductListTestCase(APITestCase):
         self.assertEqual(response.data['count'], product_count)
         self.asertEqual(len(resonse.data['result']), product_count)
 ```
-#### 4 - Unit test for an UpdateAPIView subclass
+
+### 4 - Unit test for an UpdateAPIView subclass
+
 * tests.py
+
 ```py
 class ProductUpdateTestCase(APITestCase):
     def test_update_product(self):
@@ -692,9 +783,11 @@ class ProductUpdateTestCase(APITestCase):
         updated = Product.objects.get(id=product.id)
         self.assertEqual(updated.name, 'New Product')
 ```
+
 * es wird Error kommen
 * in `serializer.py`
 * tests.py
+
 ```py
 #...
     def update(self, instance, validated_data):
@@ -702,7 +795,9 @@ class ProductUpdateTestCase(APITestCase):
 
         return super().update(instance, validated_data)
 ```
-#### 5 - Handling image uploads in a unit test
+
+### 5 - Handling image uploads in a unit test
+
 ```py
 import os.path
 from django.conf import settings
@@ -739,4 +834,5 @@ class ProductUpdateTestCase(APITestCase):
             finally: #Falls im Try etwas Schief gelaufen ist => aufräumen
                 os.remove(updated.photo.path)
 ```
+
 * Uploads sind wichtiger Teil, sollten au jeden Fall funktionieren

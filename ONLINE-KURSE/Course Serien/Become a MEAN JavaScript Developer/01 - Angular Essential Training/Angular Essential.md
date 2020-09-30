@@ -630,48 +630,344 @@ yearValidator(control: FormControl) {
 ### 1 - How Angular does dependency injection
 
 * Dependency Injection => Modularity. Geschieht in zwei Schritten:
-  1. Service registrieren = Classen, die injecten werden können. Wird beim Bootstrap registriert + was Decoratro `@Injectobar()`
+  1. Service registrieren = Classen, die injecten werden können. Wird beim Bootstrap registriert + was Decoratro `@Injectabal()`
   2. Services bekommen im Construktor. Man kann auch über globalen Provider Injector auf Services zugreifen
 
 ### 2 - Services in Angular
 
-* Services sind:
+* Dependency Injection ist Pattern nicht Angular-Thing
+
+* Services sind bzw. Gründe für Services als DI:
   1. Data/API-Service => nicht jedes Mal neu die Verbindung aufbauen
-  2. Business-Logik z.B gleiche Forms
+  2. Business-Logik z.B gleiche Forms, die in mehreren Modulen gebraucht werden.
 * Angualar Services: Http, FormBuilder, Router
 * sind dann einfacher zu Unit-Testen
 
 ### 3 - Class constructor injection
 
+* zwei Schritte.
+  1. import
+  2. construktor-Param
+
+* Bps: FormBulder
+
+```ts
+
+import FormBuilder from '@angular/forms'
+
+...
+constructor(private formBuilder: FormBuilder) {}
+
+ngOnInit(){
+  this.form = this.formBuilder.group({
+    medium: this.formBuilder.control('Movies'),
+    name: this.formBuilder.control('', Validators.compose([
+      Validators.required,
+      Validators.pattern('[\\w\\-\\s\\/]+')
+    ])),
+    category: this.formBuilder.control(''),
+    year: this.formBuilder.control(''),
+  })
+}
+
+```
+
 ### 4 - Building and providing a service
+
+* Services in app.module.ts importieren und bei providers eintragen => stehen als Dependency Injection zur Verfügung
 
 ### 5 - Providing service in the root
 
+* app.module.ts ist Root-Modul => die providers des Moduls werden im root-Injector eingetragen
+
+* mit `@Injectable({providedIn: 'root'})` kann man auch so beim root-Injector eintragen.
+
 ### 6 - Using the service in components
+
+```ts
+@Component({
+  selector: 'mw-media-item-list',
+  templateUrl: './media-item-list.component.html',
+  styleUrls: ['./media-item-list.component.css']
+})
+export class MediaItemListComponent implements OnInit {
+  mediaItems;
+
+  constructor(private mediaItemService: MediaItemService) {}
+
+  // Also hier beim ngOnInit() werden die Items abgefragt
+  ngOnInit() {
+    this.mediaItems = this.mediaItemService.get();
+  }
+
+  onMediaItemDelete(mediaItem) {
+    this.mediaItemService.delete(mediaItem);
+  }
+}
+```
+
+* hier im Beispiel wurden verschiedenen CRUD Methoden des Services in verschiedenen Componenten benuzt.
 
 ### 7 - The @Inject decorator
 
+* Werte/Objekte in den Contructor zu injecten:
+
+```ts app.module.ts
+// dieses Obj soll injected werden
+const lookupLists = {
+  mediums: ['Movies', 'Series']
+};
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule
+  ],
+  declarations: [
+    AppComponent,
+    MediaItemComponent,
+    MediaItemListComponent,
+    FavoriteDirective,
+    CategoryListPipe,
+    MediaItemFormComponent
+  ],
+  providers: [
+    // als Provier eintragen. Da keine Klasse => mit useValue
+    { provide: 'lookupListToken', useValue: lookupLists }
+  ],
+  bootstrap: [
+    AppComponent
+  ]
+})
+export class AppModule {}
+```
+
+```ts media-item-form.component.ts
+
+constructor(
+    private formBuilder: FormBuilder,
+    private mediaItemService: MediaItemService,
+    // hier wird dieses Obj injected => !! hier Decorator @Inject() mit Param von provide-Namen von app.module.ts + public 
+    @Inject('lookupListToken') public lookupLists) {}
+```
+
+* hier wird es in HTML benutzt
+
+```html
+<option *ngFor="let medium of lookupList.mediums"...>
+```
+
 ### 8 - Injection token
+
+* bessere Möglichkeit als 7.
+
+```ts providers.ts
+import { InjectionToken } from '@angular/core';
+
+// hier wird der Injecion-Token für Obj gespeichert
+export const lookupListToken = new InjectionToken('lookupListToken');
+
+export const lookupLists = {
+  mediums: ['Movies', 'Series']
+};
+
+```
+
+```ts app.module.ts
+...
+providers: [
+  {provide: lookupListToken, useValue: lookupLists}
+]
+...
+```
 
 ## 6 - HTTP
 
 ### 1 - The Angular HttpClient
 
+* in app.module.ts importieren und bei den providers eintragen, da von anderen Modulen benutzt wird.
+
 ### 2 - Using a mock backend for HTTP calls
+
+* hier für zum simulieren von Backend `HttpBackend`-Klasse von Angular genutzt um Backend zu simulieren. Dafür wurde in Datei **mock-xhr-backend.ts** entsprechende Klasse erstellt für GET/POST/DELETE/PUT für `/mediaitems`
+
+* diese MockKlasse wird in app.module.ts importiert
+
+```ts
+...
+import {McokXHRBackend} from '..';
+
+...
+
+providers: [
+  {provide: HttXhrBackend, userClass: MockXHRBackend}
+]
+```
 
 ### 3 - Using the HttpClient for GET calls
 
+* beim Service `HttpClient` benutzen als Dependency Injection
+
+```ts .service.ts
+...
+import {map} from 'rxjs/operators';
+
+get(){
+  // get() returnt Observable => hier wird pipe(map(callBackFunk)) benutzt um Observable zu entpacken
+  // get() unterstützt TS-Typings für Daten die es returnt als Generics
+  return this.http.get<MediaItemResponse>('mediaitems')
+    .pipe(map(response => {return response.mediaItems;}));
+}
+
+...
+// Interfaces für get() erstellen
+interface MediaItem{
+  id: number;
+  ...
+}
+
+interface MediaItemResponse{
+  mediaItems: MediaItem[]
+}
+
+```
+
+* Component subsrciben
+
+```ts .component.ts
+
+// subscribe kann drei Params haben: next(), error, complition
+
+...
+this.mediaItemService.get()
+  .subscribe(mediaItems => {
+    this.mediaItems => mediaItems;
+  });
+...
+
+```
+
 ### 4 - Using search params in GET calls
+
+* readByID implementieren
+
+```ts servcie.ts
+get(medium){
+  //http.get()-Options
+  const getOptions = {
+    params: {
+      medium: medium
+    };
+    //ODER
+    params: {
+      medium
+    };
+    return this.http.get<MediaItemResponse>('mediaitems', getOptions)
+      .pipe(map(response => {return response.mediaItems;}));
+  }
+}
+```
+
+```ts .component.ts
+...
+
+getMediaItems(medium:string){
+  this.medium = medium;
+  this.mediaItemsService.get(medium)
+    .subscribe(mediaItems => {
+    this.mediaItems => mediaItems;
+  });
+}
+```
 
 ### 5 - Use HttpClient for POST, PUT, and DELETE calls
 
+* ziemlich ähnlich wie GET
+
 ### 6 - Handling HTTP errors
+
+```ts servcie.ts
+...
+import {catchError} from 'rxjs/operators';
+
+get(medium){
+  const getOptions = {
+    params: {
+      medium
+    };
+      return this.http.get<MediaItemResponse>('mediaitems', getOptions)
+        .pipe(map(response => {return response.mediaItems;}),
+        catchError(this.handleError)
+      );
+  }
+}
+
+...
+
+private handleError(error: HttpErrorResponse){
+  console.log(error.message);
+  // Error für Observable werfen
+  return throwError('Data Error');
+}
+
+```
 
 ## 7 - Routing
 
 ### 1 - Setting the base href and configuring routes
 
-### 2 - Resitering routing in the app module
+* Router benutzt Browser-History man braucht: `base href='/'>` in index.html
+
+* Routen erstellen
+
+```ts app.routing.ts
+import {Routes } from '@angular/router'
+import {..Component } from '..';
+
+const appRoutes: Routes  = [
+  {
+    path: 'add',
+    component: ..Component1,
+  }
+  {
+    path: ':media',
+    component: ..Component2,
+  }
+  // redirect-Path einstellen
+  {
+    path: '',
+    redirectTo: 'all', pathMatch: 'full'
+  }
+];
+```
+
+### 2 - Registering routing in the app module
+
+```ts 
+
+import RouterModule from '..'
+
+const appRoutes: Routes  = [
+  {
+    path: 'add',
+    component: ..Component1,
+  }
+  {
+    path: ':media',
+    component: ..Component2,
+  }
+  // redirect-Path einstellen
+  {
+    path: '',
+    redirectTo: 'all', pathMatch: 'full'
+  }
+];
+
+// Router + Routen exportieren
+export const routing = RouterModule.forRoot(appRoutes);
+```
+
+* noch `routing` bei app.module.ts bei `imports` eintragen
 
 ### 3 - Routes outlets
 
@@ -688,6 +984,23 @@ yearValidator(control: FormControl) {
 ## 8 - Styling Components
 
 ### 1 - The view encapsulation modes
+
+* Component-Level-Styling. Wird von Config `ViewEncapulation`
+
+```ts ..component.ts
+...
+// Enum für Configs importieren
+import {ViewEncapsulation} from '@angular/core';
+
+@Component({
+  ...
+  styleUrls: [..],
+  encapsulation: ViewEncapsulation.Emulated // ist sozusagen Angular-Default. Renamed die CSS-Components damit sie nur für die Compontente angewendet werden
+  encapsulation: ViewEncapsulation.Native //ist depricated => besser ShadowDom
+  encapsulation:  ViewEncapsulation.None // nichts besonders mit CSS-Styles machen
+  encapsulation:  ViewEncapsulation.ShadowDom //Browser ShadowDom verwenden
+}
+```
 
 ### 2 - How Angular scopes styles to components
 

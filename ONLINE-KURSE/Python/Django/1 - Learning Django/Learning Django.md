@@ -1,73 +1,84 @@
-### 1 -Setting up Django Project
-#### 1 - what is django
+# Learnig Djang
+
+## 1 -Setting up Django Project
+
+### 1 - what is django
+
 * www.djangoproject.com
 * Python-Framework
 * Framework - Sammlung von Tools, um Webseiten zu bauen
-* Django-Tools: 
-    + ORM (Object-relational Mapping) - um DB-Anfragen zu machen, 
-    + URL-routing = welcher Logik soll gefolt werden, abhängig von der URL-eingabe, 
-    + HTML-Templating = HTML-Präsentation, 
-    + Form-Handling, 
-    + Testing-Tools
+* Django-Tools:
+  * ORM (Object-relational Mapping) - um DB-Anfragen zu machen,
+  * URL-routing = welcher Logik soll gefolt werden, abhängig von der URL-eingabe,
+  * HTML-Templating = HTML-Präsentation,
+  * Form-Handling,
+  * Testing-Tools
 * !!! Django:
-    * Tool, was in Python geschrieben ist <- keine Sprache, 
-    * kein WebServer (aber enhält eingebaueten WebServer)
-#### 2 - install python and django
+  * Tool, was in Python geschrieben ist <- keine Sprache,
+  * kein WebServer (aber enhält eingebaueten WebServer)
+
+### 2 - install python and django
+
 * von python.org -> herunterladen und installieren
 ODER
 * mit pip3: `pip3 install django==1.11.7`
-    * installiert auch `pytz`-Library für Timezone Support 
+  * installiert auch `pytz`-Library für Timezone Support
 
-#### 3 - create a Django project
+### 3 - create a Django project
+
 * `django-admin startproject ProjectName` (wisdompets) - Wird Ordner für Django-Projekt angelegt mit folgenden Dateien darin: (djang-admin.py startproject WisdomPets)
-    * `manane.py` - führt Befehle des Projekt aus
-    * *ProjectName/__init__.py* - sagt Python, dass dieser Ordner enthält Python-Dateien
-    * *ProjectName/wsgi.py* - Provides a hook for Web Server z.B für Apache oder Nginx
-    * *ProjectName/settings.py* - konfiguriert Django
-    * *ProjectName/urls.py* - routet Requests abhängig von URL
+  * `manane.py` - führt Befehle des Projekt aus
+  * *ProjectName/__init__.py* - sagt Python, dass dieser Ordner enthält Python-Dateien
+  * *ProjectName/wsgi.py* - Provides a hook for Web Server z.B für Apache oder Nginx
+  * *ProjectName/settings.py* - konfiguriert Django
+  * *ProjectName/urls.py* - routet Requests abhängig von URL
 * `python3 manage.py runserver` - Server Starten und da Django ausführen
 
-#### 4 - create a Django app
+### 4 - create a Django app
+
 * Django-App - Ordner mit Python Dateien, APP = Komponente
 * `python3 manage.py startapp appName` (adoptions)- es wird ordner mit appName erstellt (pyhon3 manage.py startapp Adoptions)
 * in *ProjectName/settings.py* zu INSTALLED_APPS gehen und appName, am Ende der Liste eintragen
 * AppName-Ordner hat:
-    + *apps.py* - Konfiguration und Initialisierung - kontroliert Settings der App 
-    + *models.py* - Data layer -> DB-Schema  und Anfragen erstellen und DB-Anfragen machen
-    + *admin.py* - Administratives Interface
-    + *urls.py* - URL routing für die APP
-    + *views.py* - Control layer bzw. Logik und Controll-Flow um mit den Requests umzugehen und HTML-Responses erstellen
-    + *tests.py* - App testen
-    + *migrations/* - enhält Migrations-Dateie, wenn man DB-Schema ändert
+  * *apps.py* - Konfiguration und Initialisierung - kontroliert Settings der App
+  * *models.py* - Data layer -> DB-Schema  und Anfragen erstellen und DB-Anfragen machen
+  * *admin.py* - Administratives Interface
+  * *urls.py* - URL routing für die APP
+  * *views.py* - Control layer bzw. Logik und Controll-Flow um mit den Requests umzugehen und HTML-Responses erstellen
+  * *tests.py* - App testen
+  * *migrations/* - enhält Migrations-Dateie, wenn man DB-Schema ändert
 
-### 2 - Working with Django models and admin
-#### 1 - models, routing, view and templates
+## 2 - Working with Django models and admin
+
+### 1 - models, routing, view and templates
+
 * Django benutze eigetlich Models <-> View <-> Controller - Architektur nennt es aber etwas anders:
     1. URL-Patterns
-    2. Veiws 
+    2. Veiws
     3. Templates
     4. Models
 * Architekture des Framework verstehen.
-    + Django benutut Model View Controler aus 4 Teielen:
+  * Django benutut Model View Controler aus 4 Teielen:
         1. URL Patterns: *projectOrdner/urls.py* - Wenn Django-App bekommt Web-Requests => werden URL Patterns benutzt => Controll-Flow und sendet ws an Views
-        2. Views:  *projectOrdner/views.py* - Logik bzw. Kontrollfluss der App <- sind Funktionen bekommen als Param HTTP-Req und erzeugen HTTP-Response. Kann Models benutzen um DB-Anfragen zu machen. 
+        2. Views:  *projectOrdner/views.py* - Logik bzw. Kontrollfluss der App <- sind Funktionen bekommen als Param HTTP-Req und erzeugen HTTP-Response. Kann Models benutzen um DB-Anfragen zu machen.
         3. Templates: *projectOrdner/adoptions/templates/* - HTML mit Template-Syntax
         4. Models: *projectOrdner/adoptions/models.py* - Um DB-Angragen zu machen kann View die Models dafür benutzen. Django-Model ist Klass mit Attributen, das DB-Schema definiert => ~ Build-In Methoden um DB-Anfragen zu machen
-    + Bsp: Vorgehensweise:
-        1. http://yoursite.com/ -> wird in URL schauen, welche View für / er benutzen soll -> View wird dann eventuell DB-Anfragen mittels Models machen -> DB-Antwort werden in home/index.html eingesetzt
+  *+ Bsp: Vorgehensweise:
+        1. [http://yoursite.com/] -> wird in URL schauen, welche View für / er benutzen soll -> View wird dann eventuell DB-Anfragen mittels Models machen -> DB-Antwort werden in home/index.html eingesetzt
 * Verlauf:
-    * URL-Pattern = urls.py (Controller) -> Views + Models = views.py + models.py (Model + View) -> Templates = /templates (View)
+  * URL-Pattern = urls.py (Controller) -> Views + Models = views.py + models.py (Model + View) -> Templates = /templates (View)
 
-#### 2 - Django models
+### 2 - Django models
+
 * Data Layer der App
-    * definiet DB-Struktur
-    * erlaubt DB-Anfragen
-* models ist Klasse die von django.db.models.model erbt
-    * ~Excel-Tabelle
+  * definiet DB-Struktur
+  * erlaubt DB-Anfragen
+* models ist Klasse die von django.db.models.model erbt   * ~Excel-Tabelle
 * Model-Klasse ersteleln:
     1. django.db.model imortieren:
     2. eigene Klasse erstellen, die von models.model erbt + eigene Attribute erstellen:
 * Bsp:
+
 ```python
 from django.db import models
 class Item(models.Model):
@@ -84,29 +95,32 @@ class Item(models.Model):
     #choices = Wert begrenzen, die in diesem Feld gespeichert werden können
     # <- siehe https.//docs.djangoproject.com
 ```
-+ mögiche Felder
-* `models.IntegerField()`
-* `models.DecimalField()`
-* `models.CharField()` - braucht `max_length`
-* `models.TextField()`
-* `models.EmailField()`
-* `models.URLField()`
-* `models.BooleanField()`
-* `models.DateTimeField()`
-* `models.ForeignKey()` - id von andere Tabele
-* `models.ManyToMany()`
+
+* mögiche Felder
+  * `models.IntegerField()`
+  * `models.DecimalField()`
+  * `models.CharField()` - braucht `max_length`
+  * `models.TextField()`
+  * `models.EmailField()`
+  * `models.URLField()`
+  * `models.BooleanField()`
+  * `models.DateTimeField()`
+  * `models.ForeignKey()` - id von andere Tabele
+  * `models.ManyToMany()`
 * Attribte:
-    * `max_length=10` 
-    * `null=True` - 
-    * `blank=True` - Field ist nicht zwingend
-    * `default`
-    * `choises`
-    * <- kann man Doku chechen => Models -> Field types
+  * `max_length=10`
+  * `null=True` -
+  * `blank=True` - Field ist nicht zwingend
+  * `default`
+  * `choises`
+  * <- kann man Doku chechen => Models -> Field types
 
-#### 3 - Django fields
+### 3 - Django fields
 
-#### 4 - implements models and fields
+### 4 - implements models and fields
+
 * Bsp:
+
 ```python
 class Pet(models.Model):
     SEX_CHOISES = [("M", "Male"), ("F", "Female")]
@@ -124,7 +138,8 @@ class Vaccine(models.Model):
     name = models.CharField(max_length=50)
 ```
 
-#### 5 - Django migrations
+### 5 - Django migrations
+
 * Models = Struktur der DB
 * Migrations = Skripte um DB-Struktur zu verändern:
 * Initial Migration = DB-Tabellen aus dem Model zu erstellen
@@ -135,27 +150,30 @@ class Vaccine(models.Model):
     4. Felder ändern
 * Migrations-Ablauf -> Generiert Migrations-Files und speicher sie in migration-Order. Migrations-Command schreibt alles in DB
 * Migration-Command-Syntax: `migrate APPNAME NUMMER`
-    * `NUMMER` ist die Reihenfolge der Änderung von Models
+  * `NUMMER` ist die Reihenfolge der Änderung von Models
 * Migratinsbefehle:
-    * `python manage.py makemigrations` = erzeugt Migrationsdateien = schauet Model-Felder an und aktuellen Stand der DB
-    * `python manage.py migrate`
-    * `python manage.py showmigrations` - [] = Migration wurde noch nicht ausgeführt.
+  * `python manage.py makemigrations` = erzeugt Migrationsdateien = schauet Model-Felder an und aktuellen Stand der DB
+  * `python manage.py migrate`
+  * `python manage.py showmigrations` - [] = Migration wurde noch nicht ausgeführt.
 * Migration für Bestimmte APP und Nummer laufen:
-    * `migrate appName Nummer`
+  * `migrate appName Nummer`
 * Wenn Migration-Datei erstellt, aber nicht ausgeführt => unapplyed Migration
 
 * Bsp - Vorgehensweise:
     1. in Terminal zum Projekt navigieren -> `python3 manage.py makemigrations` eingeben. -> wird ind `../migrations/` Datei `0001_initial.py` erstellt -> `python3 manage.py showmigrations` = zeigt alle Möglichen Migrationen an in Gruppen; [ ] = wurde noch nicht angewendet -> `python3 manage.py migrate` = alle Migrationen anwenden
 
-#### 6 - Import CSV data
+### 6 - Import CSV data
+
 * Skript ist in Übungs-Files => management-Ordner + .csv-Datei
-    * eigentlich nur eine Python-Datei: *load_pet_data.py* 
+  * eigentlich nur eine Python-Datei: *load_pet_data.py* 
 * `python3 manage.py load_pet_data.py`
 
-#### 7 - work with the Django admin
+### 7 - work with the Django admin
+
 * Admin-Interface für Project erstellen
     1. AppName/admin.py öffenen  (erste Zeile importiert admin-Modul von django.contrib)
     2. Eigene Imports machen
+
     ```python
     form .models imports Pet
 
@@ -164,7 +182,9 @@ class Vaccine(models.Model):
         # pass
         list_display = [ "name", "species", "breed", "age", "sex" ]
     ```
-    * in models.py
+
+  * in models.py
+
     ```python
     class Vaccine(models.Model):
         # code ...
@@ -173,15 +193,16 @@ class Vaccine(models.Model):
             return self.name
     ```
 
-        + < - siehe admin.py
-        + ...
+    * < - siehe admin.py
+    * ...
     3. - SuperUser erstellen um in Admin-Interface anzumelden
         * `python3 manage.py createsuperuser`:
-            * `name: project-root`
-            * `passw: djangolernen`
+        * `name: project-root`
+        * `passw: djangolernen`
         * => localhost:8000/admin
 
 #### 8 - Query data with Django ORM
+
 * DB-Querys mit in Django implementierten Funktionen:
 * im Kurs in Shell:
     1. `python3 manage.py shell` = wird python-Shell aufgemacht
@@ -191,19 +212,21 @@ class Vaccine(models.Model):
     3. `pets = Pet.objects.all()`
     4. `pet = pets[0]`
     5. `pet.name; pet.description`
-    * Django macht auch ein ID für jedes Model, startet bei 1 (eigentlich Primar Key):
-    1. `pet.id`
-* Einzelne Queries machen
-    * `pet = Pet.objects.get(id=1)` - falls falsche ID => Exception
-        * !! get() kann nur ein Object zurückgeben (also kein Array). Also falls:
-    * `Pet.objects.get(age=1)` - werden mehrere Pets returnt => MultipleObjectException
-    * `get()` ist eigentlich für id-es gut
-        *  man kann im *views.py* diese Exceptions checken
-    * `pet.vaccinations.all()`
-    * => diese Exception müssen im Code dann beachtet werden z.B try-catch
+  * Django macht auch ein ID für jedes Model, startet bei 1 (eigentlich Primar Key): `pet.id`
 
-### 3 - Building URL handlers and view
-#### 1 - Understand URL patterns
+* Einzelne Queries machen
+  * `pet = Pet.objects.get(id=1)` - falls falsche ID => Exception
+    * !! get() kann nur ein Object zurückgeben (also kein Array). Also falls:
+  * `Pet.objects.get(age=1)` - werden mehrere Pets returnt => MultipleObjectException
+  * `get()` ist eigentlich für id-es gut
+    * man kann im *views.py* diese Exceptions checken  
+  * `pet.vaccinations.all()`
+  * => diese Exception müssen im Code dann beachtet werden z.B try-catch
+
+## 3 - Building URL handlers and view
+
+### 1 - Understand URL patterns
+
 * URL-Patterns abfertigen Requests zu Views
 * benutzen Reguläsre Ausdrücke um URL zu interpretieren:
 * `ducky = String` der ducky enthält
@@ -214,13 +237,14 @@ class Vaccine(models.Model):
 * `^$` - leeres String = beginnt mit nichts + endet mit nichts
 * **pythex.org** = Reguläre Audrucke in Python:
 * Bsp für URLS:
-    1. *url.py* hat urlpatterns-Var, die Liste Aufrufe für `url()` enhält. 
+    1. *url.py* hat urlpatterns-Var, die Liste Aufrufe für `url()` enhält.
         * `url()` - hat drei Params
             1. regEx für URL das `/` am Ende ist egal
             2. view.xxx - welche View-Funktion wird aufgerufen.
-            3. name-Param - für Templates 
+            3. name-Param - für Templates
         * Bsp:
             * `url(r'^$', views.home, name='index')` - - r=RawString => brauchen keine \\ für Escape-Seq z.B wenn man Enter sagen will.
+
 ```python
 urlpatterns=[
     #url() hat drei Param:
@@ -232,10 +256,13 @@ urlpatterns=[
     #<- urlpatterns hat mehrere url() <- es wird geschaut, welche Reguläre Expression zutreffend ist und entsprechende View aufgerufen
 ]
 ```
+
 * wenn man falsche URL eingibt => wird Debug-URL mit Error-Hinweise kommen <- Falls man in Config Debug auf false macht => kommt einfach 404-Seite
 
-#### 2 - Implements URL patterns
+### 2 - Implements URL patterns
+
 * urls.py
+
 ```python
 import adoptions import views
 
@@ -245,7 +272,9 @@ urlpatterns = [
     url(r'^adoptions/(\d+)/', views.pet_detail, name="per_detail"), # (\+d) damit man es parsen kann und an views weitergeben kann
 ]
 ```
+
 * views.py
+
 ```python
 from django.http import HttpResponse
 
@@ -256,10 +285,12 @@ def pet_details(request, id):
     return HttpResponse('<p>Per_Detail View with id {} </p>'.format(id))
 ```
 
-#### 3 - Implements Django views
+### 3 - Implements Django views
+
 * im Beispiel wurden template-Files und Views-Namen gleich genannt <- ist aber nicht erforderlich
 * templates in *AppOrnder/templates* erstellten <- eventuell zuerst Ordner templates erstellen
 * views.py
+
 ```python
 from django.http import HttpResponse
 
@@ -278,43 +309,51 @@ def pet_details(request, id):
 
     return render(requset, 'pet_deatil.html', {'pet': pet})
 ```
+
 * templates home.thml
+
 ```html
-Home 
+Home
 ```
-* tempate per_detail.html
+
+* template per_detail.html
+
 ```html
 Pet detail
 ```
 
-### 4 - Building Django Templates
-#### 1 - Django Templates
+## 4 - Building Django Templates
+
+### 1 - Django Templates
+
 * sind html-Dateien mit spezieller Syntax
 * Syntax:
     1. `{{ variable }}`
     2. `{% tag %}` z.B für Ifs, Whiles. for-s
-    3. `{{ variable|filter }}` - für Filters 
-* Wenn `view.py` render aufruft => render füllt Template mit Parametern und Template erzeugt html-Datei
-#Template Syntax:
+    3. `{{ variable|filter }}` - für Filters
+* Wenn `view.py` render aufruft => render füllt Template mit Parametern und Template erzeugt html-Datei Template Syntax:
+
 ```html
 1. {{ variable }}
 <h3> {{ pet.name }} </h3>
 
 
-2. {% tag %}  #für Loops und If-s
+2. {% tag %}  <!--für Loops und If-s-->
 {% for pet in pets %}
     <li>{{ pet.name }} </li>
-{% endfor %}  #ist notwendig um das Ende des Loops zu markieren
+{% endfor %}  <!--ist notwendig um das Ende des Loops zu markieren-->
 
-{% url 'index' %} => Ausgabe. / (index aus url(, , name="index"))
-{% url 'pet_detail' pet.id %} => Ausgabe /adoptions/1/ (pfad aus url(, , name="pet_detail"))
+{% url 'index' %} <!-- => Ausgabe. / (index aus url(, , name="index")) -->
+{% url 'pet_detail' pet.id %} <!-- => Ausgabe /adoptions/1/ (pfad aus url(, , name="pet_detail"))-->
 
 
-3. {{ variable|filter }} #Temlate-Filter = nimmt String an und return String zurück wie Pipe in Bash <- um Format zu veränder z.B bei Datum
-<h3> {{ pet.name|capfirst }} </h3> #=>pet.name benutzt eingebauten Filter capfirst = erster Bushstabe 
-wird dann immer groß
+3. {{ variable|filter }} <!-- #Temlate-Filter = nimmt String an und return String zurück wie Pipe in Bash <- um Format zu veränder z.B bei Datum-->
+<h3> {{ pet.name|capfirst }} </h3> <!--#=>pet.name benutzt eingebauten Filter capfirst = erster Bushstabe 
+wird dann immer groß-->
 ```
+
 * großes Bsp alle 3 zusammengefasst
+
 ```html
 <ul>
     {% for pet in pets %}
@@ -328,11 +367,12 @@ wird dann immer groß
 ```
 
 * manche Template-Tags haben keinen end-Tag => rendern nur String
-    * sollte in `url.py` stehen
-    * `{% url "index" %}` - hier wird `name="index"` benutzt. <- URL-Tag mit Argument home wird Pfad zu home-View generieren => Output: /
-    * `{% url "pet_detail" pet.id %}` - Output */adoption/pet.id/*
+  * sollte in `url.py` stehen
+  * `{% url "index" %}` - hier wird `name="index"` benutzt. <- URL-Tag mit Argument home wird Pfad zu home-View generieren => Output: /
+  * `{% url "pet_detail" pet.id %}` - Output */adoption/pet.id/*
 
 * Base-Template von Django (*base.html*):
+
 ```html
 <!doctype html>
 <html>
@@ -352,10 +392,13 @@ wird dann immer groß
     <!--more content -->
 {% endblock content %}
 ```
+
 * <- jedesmal wenn man `{%block blockName% benutzt}` => wird der Block blockName von dem Eltern überschrieben
 
-#### 2 - Implement Django Templates
-* templates home.thml
+### 2 - Implement Django Templates
+
+* templates home.html
+
 ```html
 <div>
     {% for pet in pets %} <!-- FOR-LOOP -->
@@ -372,7 +415,9 @@ wird dann immer groß
     {% endfor %}
 </div>
 ```
+
 * tempate per_detail.html
+
 ```html
 <div>
     <!--Hier keine Schleife -->
@@ -401,37 +446,48 @@ wird dann immer groß
     <p>{{ pet.description }}
 </div>
 ```
-#### 3 - Structure Templates
+
+### 3 - Structure Templates
+
 * *base.html* erstellen und andere Templates von diesem Erben lassen
 * hier war schon Footer und Header schon erstellt => einfach ins BASE.html reinkopieren und ...
+
 ```html BASE.html
 {% block content %}
 
 {% endblock %}
 ```
-+ in den weiteren hmtl-Dateien als erste Zeile einfüegen: 
+
+* in den weiteren hmtl-Dateien als erste Zeile einfüegen: 
+
 ```html
 {% extends "base.html" %}
 {% block content %}
 <!-- HTML-CODE -->
 {% endblock %}
 ```
-#### 4 - Integrate CSS and JavaScript
+
+### 4 - Integrate CSS and JavaScript
+
 * statische Dateien = CSS und JS zuerst über *ProjectName/ProjectName/settings.py* einstellen:
+
 ```python settings.py
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")  #BASE_DIR ist oben in settings.py definiert (meist ist ProjectName/ProjectName); join() ist die python-Funktion um Pfade zu bauen
 ] # wo Dajngo nach static-Dateien schauen soll
 ```
+
 * dann in *base.html* als erste Zeile einfügen:
 `{% load static %}`; eventuell in weiteren Templates nach `{% extends "base.html" %}`
 * jetzt kann man in hrefs, links usw. die Dateien die in static-Ordner den HTML-Tags vergeben mit:
 `href/src="{% static "style.css" %}"`
 
-### Weitere Tipps:
+## Weitere Tipps
+
 * Tipps zu Lernen:
 * Pythoen, SQL, Rest
 * Django-Doku + Django-Tutorial checken:
 * Tipps welche Django-Settings sollte man ändern:
 * DEBUG zu False setzen für Prod in settigns.py:
-    * `DATABASES: <- PostgreSQL, MySQL`
+  * `DATABASES: <- PostgreSQL, MySQL`

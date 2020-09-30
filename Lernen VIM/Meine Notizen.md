@@ -22,13 +22,14 @@
 7. `s` - Aktuelles Zeichen löschen, dann insert
 8. `S` - Aktuelle Zeile löschen, dann insert
 9. `Sn` - S-Zeilen ersetzen
-10. `cO` - Object überschreiben (` ` - aktuelles Zeichen `w` = Wort, `b` = vorhergehendes Wort `^` = Text bis
+10. `cO` - Object überschreiben (` ` - aktuelles Zeichen `w` = Wort, `b` = vorhergehendes Wort `^` = Text bis zum nächsten Leerzeichen; `cc` ganze Zeile überschreiben
 11. `gi` - da wieder in den Eingabemodus wechseln, wo man es verlassen hat
+12. `R`- in Replace-Mode wechseln
 
 * `[count]command` - command count-mal ausführen (default: 1)
 
 * `u` - Letzten Befehl rückgängig machen
-* `U` - Undo der aktuellen 
+* `U` - Undo letzten Änderungen in der Zeile
 * `:! LINUXBEFEHL` - Linux-Befehl ausführen
 
 * `r<char>` - Ersetzt das aktuelle Zeichen durch `<char>`
@@ -52,7 +53,6 @@
 * `ge` - Vorheriges Wortende
 * `gE` - zum Ende des Wortes mit `.`, `(`, `{` springen
 * `0` - Zeilenanfang
-* `^` - Erstes Zeichen der Zeile
 * `$` - Zeilenende
 * `)` - Nächster Satzanfang
 * `(` - Vorheriger Satzanfang
@@ -63,14 +63,12 @@
 * `%` - Zugehörige Klammer egal ob `(`, `[`, `{`
 * `gg`- Dateianfang
 * `NUMgg` - zur bestimmten Zeile `NUM` gehen
-* `gd`
-* `gf`
 * `G` - Dateiende
 * `fZEICHEN` - zum Zeichen springen vorwärts
 * `FZEICHEN` - zum Zeichen springen rückwärts
 * `tZEICHEN` - vor dem Zeichen springen
-  * mit `;` - zum nächsten gleichen Zeichen springen
-  * mit `,` - zum vorherigen gleichen springen
+  * dann mit `;` - zum nächsten gleichen Zeichen springen
+  * dann mit `,` - zum vorherigen gleichen springen
 * `g_` - kein Leerzeichen am Ende der Zeile
 * `STRG+D` - hälfte der Seite nach unten
 * `STRG+U` - hälfte der Seite nach oben
@@ -126,7 +124,7 @@
 * `dd` - Aktuelle Zeile löschen
 * `D`  Von Cursor bis zum Zeilenende löschen
 
-#### in INSERT/EINGABE-Modus:
+#### in INSERT/EINGABE-Modus
 
 * `STRG+h` - letztes eingegebene Zeichen löschen
 * `STRG+w` - letztes eingegebene Wort löschen
@@ -153,7 +151,7 @@
 
 * Groß => bis Ende der Zeile
 
-### Statuszeilen-Kommandomus:
+### Statuszeilen-Kommandomus
 
 1. `/` - Suchen vorwärtes
 2. `?` - Suchen rückwärts
@@ -177,17 +175,18 @@
 * `ciw` - inneres Wort ändern
 * `das` - Sentence löschen
 * `da"` - etwas in `"` löschen
-* `ci"` - etwa in `"` ändern
+* `ci"` - etwas in `"` ändern
 * `dap` - Paragraph löschen
 * `dab`/`da(`/`da)` Block in `()` löschen
 * `dat` - HTML-Tag löschen
-* `cit` - HTML-Tag Inhalt ändern 
+* `cit` - HTML-Tag Inhalt ändern
+* `ggVG` - alles auswählen
 
 ### Sontiges
 
 * `.` - letzte Änderung wiederholen
 
-### Splits:
+### Splits
 
 * `:sp DATEINAME` - horisontaler Split
 * `:vsp DATEINAME` - vertikaler Split
@@ -218,12 +217,12 @@
 #### Vim-Sneak
 
 * `s{char}{char}` - den Cursor zum `{char}{char}` bewegen
-* mit `,` zum nächsten Vorkommen gehen
+  * mit `,` zum nächsten Vorkommen gehen
 * `S{char}{char}` - rückwärts
 
 #### Vim-EasyMotion
 
-* `\\` 
+* `\\`
 * `\\w` - alle Wörter markiern die mit `w` beginnen markieren
 * `\\f'` - alle Vorkommen von `'` markieren
 
@@ -232,6 +231,11 @@
 * `gd` - weiteren Cursor beim nächten gleichen Wort einfügen
 * `af` - im Visual Mode größere Blöcke auswählen
 * `gh` - Mouse-Hover simulieren
+
+##### VS CODE Settings
+
+* in settings.json -> `"vim.handleKeys": {"<C-a>": false}` - disable Vim-Shortcuts
+* in settings.json _> `
 
 ### Dateiverwaltung
 
@@ -271,3 +275,9 @@
 * `5yy` - Kopieren von 5 Zeilen in Puffer
 * `:w mytext.txt` - als **mytext.txt** speichern
 * `:r mytext.txt` - aus **mytext.txt** einlesen
+
+### UNKLAR
+
+* `gd`
+* `gf`
+* `^` - Erstes Zeichen der Zeile

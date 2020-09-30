@@ -982,10 +982,10 @@ Vue.component('price', {
 <div><price v-bind:value="item.price"></price></div>
 
 <div>
-  <price 
-    v-bind:value="item.price" 
-    :prefix=="&euro;" 
-    :precision="2" 
+  <price
+    v-bind:value="item.price"
+    :prefix=="&euro;"
+    :precision="2"
     convertion=".87"></price>
 </div>
 ```
@@ -1140,21 +1140,304 @@ template: `
 
 ### 3 - How CLI components load
 
-* 
+* Ordner-Struktur:
+  * public - Images, html-s
+    * favicon.ico
+    * index.html
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+        <title>vue-essentials</title>
+      </head>
+      <body>
+        <noscript>
+          <strong>We're sorry but vue-essentials doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+        </noscript>
+
+        <!-- App-Modul einbinden -->
+        <div id="app"></div>
+        <!-- built files will be auto injected -->
+      </body>
+    </html>
+    ```
+
+  * src
+    * assets - Images usw.
+    * components - Vue-Module/Components
+      * HelloWorld.vue
+
+      ```html
+      <template>
+        <div class="hello">
+          <h1>{{ msg }}</h1>
+          <p>
+            For a guide and recipes on how to configure / customize this project,<br />
+            check out the
+            <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
+              >vue-cli documentation</a
+            >.
+          </p>
+          <h3>Installed CLI Plugins</h3>
+          <ul>
+            <li>
+              <a
+                href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
+                target="_blank"
+                rel="noopener"
+                >babel</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
+                target="_blank"
+                rel="noopener"
+                >eslint</a
+              >
+            </li>
+          </ul>
+          <h3>Essential Links</h3>
+          <ul>
+            <li>
+              <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
+            </li>
+            <li>
+              <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
+                >Forum</a
+              >
+            </li>
+            <li>
+              <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
+                >Community Chat</a
+              >
+            </li>
+            <li>
+              <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
+                >Twitter</a
+              >
+            </li>
+            <li>
+              <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
+            </li>
+          </ul>
+          <h3>Ecosystem</h3>
+          <ul>
+            <li>
+              <a href="https://router.vuejs.org" target="_blank" rel="noopener"
+                >vue-router</a
+              >
+            </li>
+            <li>
+              <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/vuejs/vue-devtools#vue-devtools"
+                target="_blank"
+                rel="noopener"
+                >vue-devtools</a
+              >
+            </li>
+            <li>
+              <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
+                >vue-loader</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/vuejs/awesome-vue"
+                target="_blank"
+                rel="noopener"
+                >awesome-vue</a
+              >
+            </li>
+          </ul>
+        </div>
+      </template>
+
+      <script>
+      export default {
+        name: "HelloWorld",
+        // props = was von Eltern-Componente übergeben wird
+        props: {
+          msg: String
+        }
+      };
+      </script>
+
+      <!-- Add "scoped" attribute to limit CSS to this component only -->
+
+      <!-- mit scoped = wird nur für diese Sub-Component angewendet -->
+      <style scoped>
+      h3 {
+        margin: 40px 0 0;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      a {
+        color: #42b983;
+      }
+      </style>
+      ```
+
+    * App.vue
+
+    ```html
+    <template>
+      <!-- id="app" muss in div sein -->
+      <div id="app">
+        <img alt="Vue logo" src="./assets/logo.png" />
+        <!-- eine andere (Sub)-Componente -->
+        <HelloWorld msg="Welcome to Your Vue.js App" />
+      </div>
+    </template>
+
+    <script>
+    import HelloWorld from "./components/HelloWorld.vue";
+    export default {
+      name: "app",
+      //welche (Sub)-Components importiert/benutzt werden
+      components: {
+        HelloWorld
+      }
+    };
+    </script>
+
+    <style>
+    #app {
+      font-family: "Avenir", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-align: center;
+      color: #2c3e50;
+      margin-top: 60px;
+    }
+    </style>
+    ```
+
+    * main.js - meistens muss nicht verändert werden, lädt einfach nur Vue-Main-Component
+
+    ```js
+    import Vue from "vue";
+    import App from "./App.vue";
+
+    Vue.config.productionTip = false;
+
+    // app-muss von App.vue exportiert werden
+    // rendert und mount in index.html
+    new Vue({
+      render: h => h(App)
+    }).$mount("#app");
+    ```
 
 ### 4 - Installing additional modules
 
+* zusätzliche Libs installieren: Bootstrap, Animate.css, Font-Awsome, Vue-Router
+
+* `npm i --save animate.css bootstrap jquery popper.js vue-router`
+* `npm i --save @fortawesome/fontawesome-free @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-svg-icons @fortawesome/vue-fontawesome`
+
+* eventuelle gibt es diese Libs als Vue-Components
+
+* eventuell die Libs dann in *index.html* einfügen oder in *App.vue* importieren:
+
+```js
+...
+import "bootstrap"; // importiert benötigtes JS
+import {library} from "@fortawesome/fontawesome-svg-core";
+import "bootstrap/dist/css/boostrap.css";  // hier auch CSS importieren
+import "animate.css/animate.css";
+
+import {
+  faShoppingCart,
+  faDollarSign,
+} from "@fortawesome/free-solid-svg-icons"
+
+// die Importiereten Icons zu Libaray adden
+library.add(faShoppingCart, foDollarSign)
+```
+
+* eventuell die richtige Location checken
+
 ### 5 - Testing your module installations
+
+* font-awesome-Icons sind nun Componenten = eventuell die Doku anschauen wie als Componente benutzt werden sollen 
+```html
+...
+<font-awesome-icon></font-awesome-icon>
+...
+
+<script>
+  import {FontAwesomeIcon} from "@fortawesome/@fortawesome/vue-fontawesome
+</script>
+```
+
 
 ## 7 - Projects with the Build Tools
 
 ### 1 - Creating a component
 
+* Ordner: /component/Price.vue erstellen
+
+```html
+<template>
+  ...
+</template>
+
+<script>
+  export default {
+    props: {
+      ...
+    }
+    ...
+
+  }
+</script>
+```
+
+* in App.vue ergänzen
+
+```html
+<script>
+  ...
+  import Price from ".."
+  
+  export default {
+    ...
+    components: {
+      Price,
+    }
+  }
+  
+<script>
+```
+
 ### 2 - Managing complex child components
+
+* etwa gleich wie 1.
 
 ### 3 - Using the Chrome DevTools
 
+* Extension: Vue.js devtools installieren
+
 ### 4 - Emitting updates
+
+  1. PriceSlider.vue erstellt
+  2. App.vue:
+      1. importieren
+      2. benutzen + Komunikation einbauen mittels EventEmitter mit der Variable maximum/maxAmout(in Kind)
 
 ### 5 - Adding navigation
 
