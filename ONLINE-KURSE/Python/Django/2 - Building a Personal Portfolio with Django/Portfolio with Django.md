@@ -251,7 +251,9 @@ def detail(request, job_id): # job_id ist mapping name für id von path()
 
 ### 4 - URL paths with parameters
 
-- `{{ }}` benutzen, wenn man Variablen aus Code in Template einfügen möchte => oft die Parameter in den Funktionen von _urls.py_ also: `<img src={{ job.image.url }}></img>`
+- `{{ }}` benutzen, wenn man Variablen aus Code in Template einfügen möchte => oft die Parameter in den Funktionen von _urls.py_ also:
+  1. `<img src={{ job.image.url }}></img>`
+     2 `<a href="{% url 'detail', job.id}">` - wenn man im Template in **for** ist => hat man zugriff auf die for-Variablen
 - `<a href="{% url 'detail' job.id %}">` - in _.html_ eingeben. => wenn `detail(requset job.id)` wird **job_id** übergeben
 
 ### Next Step
